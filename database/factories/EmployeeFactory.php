@@ -1,0 +1,29 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Employee;
+use App\Models\Job;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<Employee>
+ */
+class EmployeeFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+            'salary' => fake()->randomFloat(2, 70000, 150000),
+            'bonus' => fake()->randomFloat(2, 10000, 20000),
+            'manager_id' => null,
+            'job_code' => fn() => Job::factory(),
+        ];
+    }
+}
