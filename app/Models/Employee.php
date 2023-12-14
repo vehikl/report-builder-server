@@ -26,7 +26,7 @@ class Employee extends Model
 
     public function job(): BelongsTo
     {
-        return $this->belongsTo(Job::class, 'job_code');
+        return $this->belongsTo(Job::class, 'job_code', 'code');
     }
 
     public function subordinates(): HasMany
