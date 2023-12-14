@@ -25,5 +25,7 @@ class DatabaseSeeder extends Seeder
             ['manager_id' => $managers->get(1)],
         )
         ->create();
+
+        $this->call(EntitySeeder::class);
     }
 }
