@@ -20,4 +20,9 @@ class Entity extends Model
     {
         return $this->hasMany(Attribute::class, 'entity_table', 'table');
     }
+
+    public function relations(): HasMany
+    {
+        return $this->hasMany(Relation::class, 'entity_table', 'table');
+    }
 }

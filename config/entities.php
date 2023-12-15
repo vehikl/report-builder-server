@@ -12,7 +12,7 @@ return [
             [
                 'accessor' => 'employees',
                 'name' => 'Employees',
-                'related_table' => 'employees',
+                'related_entity_table' => 'employees',
                 'is_collection' => true
             ]
         ]
@@ -32,19 +32,19 @@ return [
             [
                 'accessor' => 'job',
                 'name' => 'Job',
-                'related_table' => 'jobs',
+                'related_entity_table' => 'jobs',
                 'is_collection' => false
             ],
             [
                 'accessor' => 'manager',
                 'name' => 'Manager',
-                'related_table' => 'employees',
+                'related_entity_table' => 'employees',
                 'is_collection' => false
             ],
             [
                 'accessor' => 'subordinates',
                 'name' => 'Subordinates',
-                'related_table' => 'employees',
+                'related_entity_table' => 'employees',
                 'is_collection' => true
             ]
         ]
