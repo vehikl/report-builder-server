@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('columns', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
             $table->string('expression');
             $table->foreignId('report_id')->constrained();
+            $table->timestamps();
         });
     }
 
