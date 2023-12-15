@@ -5,7 +5,6 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Employee;
 use App\Models\Job;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,10 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $managerJob = Job::factory()->create(['title' => 'Manager']);
+
         $managers = Employee::factory()
             ->count(2)
-            ->for(Job::factory()->sequence(['title' => 'Manager']))
-            ->create();
+            ->create(['job_code' => $managerJob]);
 
         Employee::factory()->count(4)->sequence(
             ['manager_id' => $managers->get(0)],
