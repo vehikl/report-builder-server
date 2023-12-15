@@ -9,9 +9,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $managerJob = Job::factory()->create(['title' => 'Manager']);
@@ -27,5 +24,6 @@ class DatabaseSeeder extends Seeder
         ->create();
 
         $this->call(EntitySeeder::class);
+        $this->call(ReportSeeder::class);
     }
 }
