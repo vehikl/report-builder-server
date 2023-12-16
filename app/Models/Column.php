@@ -19,4 +19,9 @@ class Column extends Model
     {
         return $this->belongsTo(Report::class);
     }
+
+    public function relation(): string|null
+    {
+        return implode('.', array_slice(explode('.', $this->expression), 0, -1)) ?: null;
+    }
 }
