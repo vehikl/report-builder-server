@@ -10,16 +10,18 @@ class ReportSeeder extends Seeder
 {
     public function run(): void
     {
+        $columns = [
+            ['name' => 'Name', 'expression' => 'name'],
+            ['name' => 'Salary', 'expression' => 'salary'],
+            ['name' => 'Job', 'expression' => 'job.title'],
+            ['name' => 'Manager', 'expression' => 'manager.name'],
+            ['name' => 'Manager Job', 'expression' => 'manager.job.title'],
+        ];
+
         Report::factory()
             ->has(Column::factory()
-                ->count(3)
-                ->sequence(
-                    ['name' => 'Name', 'expression' => 'name'],
-                    ['name' => 'Salary', 'expression' => 'salary'],
-                    ['name' => 'Job', 'expression' => 'job.title'],
-                    ['name' => 'Manager', 'expression' => 'manager.name'],
-                    ['name' => 'Manager Job', 'expression' => 'manager.job.title'],
-                ))
+                ->count(count($columns))
+                ->sequence(...$columns))
             ->create(['name' => 'Employees']);
     }
 }
