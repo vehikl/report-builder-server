@@ -15,6 +15,6 @@ class VisualizeReport extends Controller
     {
         $employees = Employee::query()->with($report->relations())->get();
 
-        return JsonResource::make($report->getVisualization($employees))->toResponse($request);
+        return JsonResource::make($report->visualize($employees))->toResponse($request);
     }
 }

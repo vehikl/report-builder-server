@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->get('user', function (Request $request) {
 });
 
 Route::get('entities', ListEntities::class);
+
 Route::prefix('reports')->group(function () {
     Route::get('/', ListReports::class);
     Route::get('{report}', ShowReport::class);

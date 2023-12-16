@@ -42,9 +42,10 @@ class Report extends Model
             ->toArray();
     }
 
-    public function getVisualization(Collection $models): array
+    public function visualize(Collection $models): array
     {
         return [
+            'name' => $this->name,
             'headers' => $this->columns->pluck('name'),
             'records' => $this->getRecords($models),
         ];
