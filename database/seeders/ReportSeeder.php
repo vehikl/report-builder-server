@@ -10,18 +10,33 @@ class ReportSeeder extends Seeder
 {
     public function run(): void
     {
-        $columns = [
-            ['name' => 'Name', 'expression' => 'name'],
-            ['name' => 'Salary', 'expression' => 'salary'],
-            ['name' => 'Job', 'expression' => 'job.title'],
-            ['name' => 'Manager', 'expression' => 'manager.name'],
-            ['name' => 'Manager Job', 'expression' => 'manager.job.title'],
+        $reports = [
+            [
+                'name' => 'Employees',
+                'columns' => [
+                    ['name' => 'Name', 'expression' => 'name'],
+                    ['name' => 'Salary', 'expression' => 'salary'],
+                    ['name' => 'Job', 'expression' => 'job.title'],
+                    ['name' => 'Manager', 'expression' => 'manager.name'],
+                    ['name' => 'Manager Job', 'expression' => 'manager.job.title'],
+                ]
+            ],
+            [
+                'name' => 'Employer Managers',
+                'columns' => [
+                    ['name' => 'Name', 'expression' => 'name'],
+                    ['name' => 'Manager', 'expression' => 'manager.name'],
+                ]
+            ]
         ];
 
-        Report::factory()
-            ->has(Column::factory()
-                ->count(count($columns))
-                ->sequence(...$columns))
-            ->create(['name' => 'Employees']);
+        foreach ($reports as $report) {
+            Report::factory()
+                ->has(Column::factory()
+                    ->count(count($report['columns']))
+                    ->sequence(...$report['columns']))
+                ->create(['name' => $report['name']]);
+        }
+
     }
 }
