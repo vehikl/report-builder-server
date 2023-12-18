@@ -22,7 +22,7 @@ class ReportSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'Employer Managers',
+                'name' => 'Employee Managers',
                 'columns' => [
                     ['name' => 'Name', 'expression' => 'name'],
                     ['name' => 'Manager', 'expression' => 'manager.name'],

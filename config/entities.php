@@ -19,7 +19,7 @@ return [
     ],
     [
         'table' => 'employees',
-        'name' => 'Employees',
+        'name' => 'Employee',
         'attributes' => [
             ['column' => 'id', 'name' => 'Id'],
             ['column' => 'name', 'name' => 'Name'],

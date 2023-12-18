@@ -46,7 +46,10 @@ class Report extends Model
     {
         return [
             'name' => $this->name,
-            'headers' => $this->columns->pluck('name'),
+            'columns' => $this->columns->map(fn(Column $column) => [
+                'name' => $column->name,
+                'expression' => $column->expression
+            ]),
             'records' => $this->getRecords($models),
         ];
     }
