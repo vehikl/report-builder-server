@@ -19,9 +19,13 @@ class DatabaseSeeder extends Seeder
 
         Employee::factory()->count(4)->sequence(
             ['manager_id' => $managers->get(0)],
-            ['manager_id' => $managers->get(1)],
+            [
+                'manager_id' => $managers->get(1),
+                'equity_amount' => null,
+                'equity_rationale' => null,
+            ],
         )
-        ->create();
+            ->create();
 
         $this->call(EntitySeeder::class);
         $this->call(ReportSeeder::class);

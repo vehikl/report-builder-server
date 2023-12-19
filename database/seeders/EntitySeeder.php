@@ -30,7 +30,7 @@ class EntitySeeder extends Seeder
             Relation::factory()
                 ->count(count($relations))
                 ->sequence(...$relations)
-                ->create(['entity_id' => $i + 1]);
+                ->create(['entity_id' => $i]);
         }
     }
 }

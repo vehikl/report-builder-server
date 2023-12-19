@@ -20,6 +20,7 @@ class ReportSeeder extends Seeder
                     ['name' => 'Job', 'expression' => 'job:title'],
                     ['name' => 'Manager', 'expression' => 'manager:name'],
                     ['name' => 'Manager Job', 'expression' => 'manager:job:title'],
+                    ['name' => 'Equity Rationale', 'expression' => '5:equity_rationale'],
                 ]
             ],
             [

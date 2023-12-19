@@ -1,7 +1,7 @@
 <?php
 
 return [
-    [
+    1 => [
         'table' => 'jobs',
         'name' => 'Job',
         'attributes' => [
@@ -17,7 +17,7 @@ return [
             ]
         ]
     ],
-    [
+    2 => [
         'table' => 'employees',
         'name' => 'Employee',
         'attributes' => [
@@ -46,7 +46,22 @@ return [
                 'name' => 'Subordinates',
                 'related_entity_id' => 2,
                 'is_collection' => true
-            ]
+            ],
+            [
+                'path' => null,
+                'name' => 'Equity',
+                'related_entity_id' => 3,
+                'is_collection' => false
+            ],
         ]
-    ]
+    ],
+    3 =>[
+        'table' => 'employees',
+        'name' => 'Equity',
+        'attributes' => [
+            ['path' => 'equity_amount', 'name' => 'Amount'],
+            ['path' => 'equity_rationale', 'name' => 'Rationale'],
+        ],
+        'relations' => []
+    ],
 ];

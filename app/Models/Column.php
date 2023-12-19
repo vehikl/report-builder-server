@@ -20,9 +20,10 @@ class Column extends Model
         return $this->belongsTo(Report::class);
     }
 
-    public function path()
+    public function path(): string
     {
-        return str_replace(':', '.', $this->expression);
+        $normalized = preg_replace('/[0-9]+:/', '',  $this->expression);
+        return str_replace(':', '.', $normalized);
     }
 
     public function relation(): string|null

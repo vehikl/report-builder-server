@@ -14,6 +14,10 @@ return new class extends Migration {
             $table->decimal('bonus', 9);
             $table->foreignId('job_code')->constrained('jobs', 'code');
             $table->foreignId('manager_id')->nullable()->constrained('employees');
+
+            $table->decimal('equity_amount', 9)->nullable();
+            $table->string('equity_rationale')->nullable();
+
             $table->timestamps();
         });
     }

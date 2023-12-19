@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('relations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('entity_id')->constrained();
-            $table->string('path');
+            $table->string('path')->nullable();
             $table->foreignId('related_entity_id')->constrained('entities');
             $table->string('name');
             $table->boolean('is_collection');
