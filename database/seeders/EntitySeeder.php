@@ -24,13 +24,13 @@ class EntitySeeder extends Seeder
                 ]);
         }
 
-        foreach (config('entities') as $entity) {
+        foreach (config('entities') as $i => $entity) {
             $relations = $entity['relations'];
 
             Relation::factory()
                 ->count(count($relations))
                 ->sequence(...$relations)
-                ->create(['entity_table' => $entity['table']]);
+                ->create(['entity_id' => $i + 1]);
         }
     }
 }

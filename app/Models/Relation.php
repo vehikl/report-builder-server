@@ -18,11 +18,11 @@ class Relation extends Model
 
     public function entity(): BelongsTo
     {
-        return $this->belongsTo(Entity::class, 'entity_table', 'table');
+        return $this->belongsTo(Entity::class);
     }
 
     public function relatedEntity(): BelongsTo
     {
-        return $this->belongsTo(Entity::class, 'related_entity_table', 'table');
+        return $this->belongsTo(Entity::class, 'related_entity_id');
     }
 }

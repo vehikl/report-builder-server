@@ -13,19 +13,21 @@ class ReportSeeder extends Seeder
         $reports = [
             [
                 'name' => 'Employees',
+                'entity_id' => 2,
                 'columns' => [
                     ['name' => 'Name', 'expression' => 'name'],
                     ['name' => 'Salary', 'expression' => 'salary'],
-                    ['name' => 'Job', 'expression' => 'job.title'],
-                    ['name' => 'Manager', 'expression' => 'manager.name'],
-                    ['name' => 'Manager Job', 'expression' => 'manager.job.title'],
+                    ['name' => 'Job', 'expression' => 'job:title'],
+                    ['name' => 'Manager', 'expression' => 'manager:name'],
+                    ['name' => 'Manager Job', 'expression' => 'manager:job:title'],
                 ]
             ],
             [
                 'name' => 'Employee Managers',
+                'entity_id' => 2,
                 'columns' => [
                     ['name' => 'Name', 'expression' => 'name'],
-                    ['name' => 'Manager', 'expression' => 'manager.name'],
+                    ['name' => 'Manager', 'expression' => 'manager:name'],
                 ]
             ]
         ];
@@ -35,7 +37,10 @@ class ReportSeeder extends Seeder
                 ->has(Column::factory()
                     ->count(count($report['columns']))
                     ->sequence(...$report['columns']))
-                ->create(['name' => $report['name']]);
+                ->create([
+                    'name' => $report['name'],
+                    'entity_id' => $report['entity_id'],
+                ]);
         }
 
     }

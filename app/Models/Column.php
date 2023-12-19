@@ -20,8 +20,13 @@ class Column extends Model
         return $this->belongsTo(Report::class);
     }
 
+    public function path()
+    {
+        return str_replace(':', '.', $this->expression);
+    }
+
     public function relation(): string|null
     {
-        return implode('.', array_slice(explode('.', $this->expression), 0, -1)) ?: null;
+        return implode('.', array_slice(explode('.', $this->path()), 0, -1)) ?: null;
     }
 }

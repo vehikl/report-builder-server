@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -12,6 +13,11 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
+
+    public function entity(): BelongsTo
+    {
+        return $this->belongsTo(Entity::class);
+    }
 
     public function columns(): HasMany
     {
@@ -30,7 +36,7 @@ class Report extends Model
     {
         return $this->columns
             ->mapWithKeys(fn(Column $column) => [
-                $column->name => self::getValueByPath($model, $column->expression)
+                $column->name => self::getValueByPath($model, $column->path())
             ])
             ->toArray();
     }

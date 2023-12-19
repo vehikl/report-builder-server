@@ -10,19 +10,15 @@ class Entity extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'table';
-    protected $keyType = 'string';
-    public $incrementing = false;
-
     protected $fillable = ['table', 'name'];
 
     public function attributes(): HasMany
     {
-        return $this->hasMany(Attribute::class, 'entity_table', 'table');
+        return $this->hasMany(Attribute::class);
     }
 
     public function relations(): HasMany
     {
-        return $this->hasMany(Relation::class, 'entity_table', 'table');
+        return $this->hasMany(Relation::class);
     }
 }

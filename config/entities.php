@@ -5,14 +5,14 @@ return [
         'table' => 'jobs',
         'name' => 'Job',
         'attributes' => [
-            ['column' => 'code', 'name' => 'Code'],
-            ['column' => 'title', 'name' => 'Title'],
+            ['path' => 'code', 'name' => 'Code'],
+            ['path' => 'title', 'name' => 'Title'],
         ],
         'relations' => [
             [
-                'accessor' => 'employees',
+                'path' => 'employees',
                 'name' => 'Employees',
-                'related_entity_table' => 'employees',
+                'related_entity_id' => 2,
                 'is_collection' => true
             ]
         ]
@@ -21,30 +21,30 @@ return [
         'table' => 'employees',
         'name' => 'Employee',
         'attributes' => [
-            ['column' => 'id', 'name' => 'Id'],
-            ['column' => 'name', 'name' => 'Name'],
-            ['column' => 'salary', 'name' => 'Salary'],
-            ['column' => 'bonus', 'name' => 'Bonus'],
-            ['column' => 'manager_id', 'name' => 'Manager Id'],
-            ['column' => 'job_code', 'name' => 'Job Code'],
+            ['path' => 'id', 'name' => 'Id'],
+            ['path' => 'name', 'name' => 'Name'],
+            ['path' => 'salary', 'name' => 'Salary'],
+            ['path' => 'bonus', 'name' => 'Bonus'],
+            ['path' => 'manager_id', 'name' => 'Manager Id'],
+            ['path' => 'job_code', 'name' => 'Job Code'],
         ],
         'relations' => [
             [
-                'accessor' => 'job',
+                'path' => 'job',
                 'name' => 'Job',
-                'related_entity_table' => 'jobs',
+                'related_entity_id' => 1,
                 'is_collection' => false
             ],
             [
-                'accessor' => 'manager',
+                'path' => 'manager',
                 'name' => 'Manager',
-                'related_entity_table' => 'employees',
+                'related_entity_id' => 2,
                 'is_collection' => false
             ],
             [
-                'accessor' => 'subordinates',
+                'path' => 'subordinates',
                 'name' => 'Subordinates',
-                'related_entity_table' => 'employees',
+                'related_entity_id' => 2,
                 'is_collection' => true
             ]
         ]

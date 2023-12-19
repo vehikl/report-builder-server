@@ -9,7 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('entities', function (Blueprint $table) {
-            $table->string('table')->primary();
+            $table->id();
+            $table->string('table');
             $table->string('name');
             $table->timestamps();
         });
