@@ -22,8 +22,8 @@ class Column extends Model
 
     public function path(): string
     {
-        $normalized = preg_replace('/[0-9]+:/', '',  $this->expression);
-        return str_replace(':', '.', $normalized);
+        $normalized = preg_replace('/[0-9]+:,?/', '',  $this->expression);
+        return str_replace(',', '.', $normalized);
     }
 
     public function relation(): string|null
