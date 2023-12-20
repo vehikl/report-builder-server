@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\PreviewReportRequest;
-use App\Models\Employee;
-use App\Models\Report;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PreviewReport extends Controller
@@ -16,8 +13,10 @@ class PreviewReport extends Controller
     {
         $report = $request->report();
 
-        $employees = Employee::query()->with($report->relations())->get();
+        $ModelClass = config('models')[$report->entity->table];
 
-        return JsonResource::make($report->preview($employees))->toResponse($request);
+        $models = $ModelClass::query()->with($report->relations())->get();
+
+        return JsonResource::make($report->preview($models))->toResponse($request);
     }
 }

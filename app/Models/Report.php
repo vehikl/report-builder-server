@@ -52,6 +52,7 @@ class Report extends Model
     {
         return [
             'name' => $this->name,
+            'entity_id' => $this->entity_id,
             'columns' => $this->columns->map(fn(Column $column) => [
                 'name' => $column->name,
                 'expression' => $column->expression

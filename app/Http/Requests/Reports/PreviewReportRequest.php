@@ -13,6 +13,7 @@ class PreviewReportRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
+            'entity_id' => ['required', 'exists:entities,id'],
             'columns' => ['required', 'array', 'filled'],
             'columns.*.name' => ['required', 'string'],
             'columns.*.expression' => ['required', 'string']
@@ -29,6 +30,7 @@ class PreviewReportRequest extends FormRequest
     {
         return Report::query()->make()->forceFill([
             'name' => $this->input('name'),
+            'entity_id' => (int)$this->input('entity_id'),
             'columns' => $this->columns()
         ]);
     }
