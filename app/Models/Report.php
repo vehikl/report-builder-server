@@ -27,7 +27,7 @@ class Report extends Model
     public function relations(): array
     {
         return $this->columns
-            ->map(fn(Column $column) => $column->relation())
+            ->flatMap(fn(Column $column) => $column->relations())
             ->filter()
             ->toArray();
     }
@@ -36,7 +36,7 @@ class Report extends Model
     {
         return $this->columns
             ->mapWithKeys(fn(Column $column) => [
-                $column->name => self::getValueByPath($model, $column->path())
+                $column->name => self::getValueByPath($model, $column->paths()[0])
             ])
             ->toArray();
     }

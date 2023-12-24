@@ -20,14 +20,16 @@ class Column extends Model
         return $this->belongsTo(Report::class);
     }
 
-    public function path(): string
+    public function paths(): array
     {
-        $normalized = preg_replace('/[0-9]+:,?/', '',  $this->expression);
-        return str_replace(',', '.', $normalized);
+        $normalized = preg_replace('/[0-9]+:,?/', '', $this->expression);
+        return [str_replace(',', '.', $normalized)];
     }
 
-    public function relation(): string|null
+    public function relations(): array
     {
-        return implode('.', array_slice(explode('.', $this->path()), 0, -1)) ?: null;
+        return array_map(function (string $path) {
+            return implode('.', array_slice(explode('.', $path), 0, -1)) ?: null;
+        }, $this->paths());
     }
 }
