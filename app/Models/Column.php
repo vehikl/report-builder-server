@@ -22,8 +22,22 @@ class Column extends Model
 
     public function paths(): array
     {
-        $normalized = preg_replace('/[0-9]+:,?/', '', $this->expression);
-        return [str_replace(',', '.', $normalized)];
+        $attributes = Attribute::query()->get();
+        $identifiers = explode('.', $this->expression);
+
+        $paths = [];
+        $currentEntityId = $this->report->entity_id;
+        foreach ($identifiers as $identifier) {
+            $attribute = $attributes->where('entity_id', $currentEntityId)->where('identifier', $identifier)->first();
+            $paths[] = $attribute->path;
+
+            $currentEntityId = match ($attribute->type->name) {
+                'entity', 'collection' => $attribute->type->entityId,
+                default => null
+            };
+        }
+
+        return [implode('.', array_filter($paths))];
     }
 
     public function relations(): array

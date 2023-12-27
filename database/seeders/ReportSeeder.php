@@ -15,20 +15,20 @@ class ReportSeeder extends Seeder
                 'name' => 'Employees',
                 'entity_id' => 2,
                 'columns' => [
-                    ['name' => 'Name', 'expression' => '5:name'],
-                    ['name' => 'Salary', 'expression' => '6:salary'],
-                    ['name' => 'Job', 'expression' => '10:job,2:title'],
-                    ['name' => 'Manager', 'expression' => '11:manager,5:name'],
-                    ['name' => 'Manager Job', 'expression' => '11:manager,10:job,2:title'],
-                    ['name' => 'Equity Rationale', 'expression' => '13:,15:equity_rationale'],
+                    ['name' => 'Name', 'expression' => 'name'],
+                    ['name' => 'Salary', 'expression' => 'salary'],
+                    ['name' => 'Job', 'expression' => 'job.title'],
+                    ['name' => 'Manager', 'expression' => 'manager.name'],
+                    ['name' => 'Manager Job', 'expression' => 'manager.job.title'],
+                    ['name' => 'Equity Rationale', 'expression' => 'equity.rationale'],
                 ]
             ],
             [
                 'name' => 'Employee Managers',
                 'entity_id' => 2,
                 'columns' => [
-                    ['name' => 'Name', 'expression' => '5:name'],
-                    ['name' => 'Manager', 'expression' => '11:manager,5:name'],
+                    ['name' => 'Name', 'expression' => 'name'],
+                    ['name' => 'Manager', 'expression' => 'manager.name'],
                 ]
             ]
         ];

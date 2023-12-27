@@ -28,10 +28,13 @@ class PreviewReportRequest extends FormRequest
 
     public function report(): Report
     {
-        return Report::query()->make()->forceFill([
+        $report = Report::query()->make();
+
+        return $report->forceFill([
             'name' => $this->input('name'),
             'entity_id' => (int)$this->input('entity_id'),
             'columns' => $this->columns()
+                ->map(fn(Column $column) => $column->forceFill(['report' => $report]))
         ]);
     }
 }
