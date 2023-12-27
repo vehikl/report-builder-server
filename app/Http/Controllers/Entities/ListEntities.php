@@ -12,7 +12,7 @@ class ListEntities extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        $entities = Entity::query()->with(['attributes', 'relations'])->get();
+        $entities = Entity::query()->with('attributes')->get();
 
         return JsonResource::collection($entities)->toResponse($request);
     }

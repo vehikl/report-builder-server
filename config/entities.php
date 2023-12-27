@@ -5,63 +5,33 @@ return [
         'table' => 'jobs',
         'name' => 'Job',
         'attributes' => [
-            ['path' => 'code', 'name' => 'Code'],
-            ['path' => 'title', 'name' => 'Title'],
+            /*  1 */['path' => 'code', 'name' => 'Code', 'type' => 'string'],
+            /*  2 */['path' => 'title', 'name' => 'Title', 'type' => 'string'],
+            /*  3 */['path' => 'employees', 'name' => 'Employees', 'type' => 'collection:2']
         ],
-        'relations' => [
-            [
-                'path' => 'employees',
-                'name' => 'Employees',
-                'related_entity_id' => 2,
-                'is_collection' => true
-            ]
-        ]
     ],
     2 => [
         'table' => 'employees',
         'name' => 'Employee',
         'attributes' => [
-            ['path' => 'id', 'name' => 'Id'],
-            ['path' => 'name', 'name' => 'Name'],
-            ['path' => 'salary', 'name' => 'Salary'],
-            ['path' => 'bonus', 'name' => 'Bonus'],
-            ['path' => 'manager_id', 'name' => 'Manager Id'],
-            ['path' => 'job_code', 'name' => 'Job Code'],
+            /*  4 */['path' => 'id', 'name' => 'Id', 'type' => 'number'],
+            /*  5 */['path' => 'name', 'name' => 'Name', 'type' => 'string'],
+            /*  6 */['path' => 'salary', 'name' => 'Salary', 'type' => 'number'],
+            /*  7 */['path' => 'bonus', 'name' => 'Bonus', 'type' => 'number'],
+            /*  8 */['path' => 'manager_id', 'name' => 'Manager Id', 'type' => 'number'],
+            /*  9 */['path' => 'job_code', 'name' => 'Job Code', 'type' => 'string'],
+            /* 10 */['path' => 'job', 'name' => 'Job', 'type' => 'entity:1'],
+            /* 11 */['path' => 'manager', 'name' => 'Manager', 'type' => 'entity:2'],
+            /* 12 */['path' => 'subordinates', 'name' => 'Subordinates', 'type' => 'collection:2'],
+            /* 13 */['path' => null, 'name' => 'Equity', 'type' => 'entity:3'],
         ],
-        'relations' => [
-            [
-                'path' => 'job',
-                'name' => 'Job',
-                'related_entity_id' => 1,
-                'is_collection' => false
-            ],
-            [
-                'path' => 'manager',
-                'name' => 'Manager',
-                'related_entity_id' => 2,
-                'is_collection' => false
-            ],
-            [
-                'path' => 'subordinates',
-                'name' => 'Subordinates',
-                'related_entity_id' => 2,
-                'is_collection' => true
-            ],
-            [
-                'path' => null,
-                'name' => 'Equity',
-                'related_entity_id' => 3,
-                'is_collection' => false
-            ],
-        ]
     ],
     3 =>[
         'table' => 'employees',
         'name' => 'Equity',
         'attributes' => [
-            ['path' => 'equity_amount', 'name' => 'Amount'],
-            ['path' => 'equity_rationale', 'name' => 'Rationale'],
+            /* 14 */['path' => 'equity_amount', 'name' => 'Amount', 'type' => 'number'],
+            /* 15 */['path' => 'equity_rationale', 'name' => 'Rationale', 'type' => 'string'],
         ],
-        'relations' => []
     ],
 ];

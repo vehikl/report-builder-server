@@ -11,11 +11,10 @@ return new class extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('entity_id')->constrained();
-            $table->string('path');
+            $table->string('path')->nullable();
             $table->string('name');
+            $table->string('type');
             $table->timestamps();
-
-            $table->unique(['entity_id', 'path']);
         });
     }
 

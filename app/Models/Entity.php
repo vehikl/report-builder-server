@@ -16,9 +16,4 @@ class Entity extends Model
     {
         return $this->hasMany(Attribute::class);
     }
-
-    public function relations(): HasMany
-    {
-        return $this->hasMany(Relation::class);
-    }
 }
