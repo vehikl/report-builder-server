@@ -8,7 +8,8 @@ class ExpressionParser {
     private static array $tokens = [
         ["/^\s+/", null],
         ["/^-?\d+(?:\.\d+)?\b/", 'NUMBER'],
-        ["/^:?[a-zA-Z]+/", 'IDENT'],
+        ["/^[a-zA-Z]+/", 'IDENT'],
+        ["/^:[a-zA-Z]+(\.[a-zA-Z]+)*/", 'ATTRIBUTE'],
         ["/^\"[^\"]*\"/", 'STRING'],
         ["/^\+/", '+'],
         ["/^-/", '-'],
@@ -137,6 +138,11 @@ class ExpressionParser {
             return $expr;
         }
 
+        if ($this->is('ATTRIBUTE')) {
+            $attribute = $this->eat('ATTRIBUTE');
+            return ['type' => 'attribute', 'value' => substr($attribute['token'], 1)];
+        }
+
         if ($this->is('IDENT')) {
             $identifier = $this->eat('IDENT');
 
@@ -166,9 +172,4 @@ class ExpressionParser {
 
         throw new Exception('Malformed expression.');
     }
-
-//    private function CALL(): array
-//    {
-//
-//    }
 }

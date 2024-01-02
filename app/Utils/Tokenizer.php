@@ -31,20 +31,19 @@ class Tokenizer
 
         foreach ($this->tokens as [$pattern, $type]) {
             $matches = [];
-            preg_match($pattern, $str, $matches);
-            [$match] = $matches;
+            $doesMatch = preg_match($pattern, $str, $matches);
 
-            if ($match === null) {
+            if (!$doesMatch) {
                 continue;
             }
 
-            $this->cursor += strlen($match);
+            $this->cursor += strlen($matches[0]);
 
             if ($type === null) {
                 return $this->next();
             }
 
-            return ['token' => $match, 'type' => $type];
+            return ['token' => $matches[0], 'type' => $type];
         }
 
         throw new Exception("Unrecognized input: $str[0]");

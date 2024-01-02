@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Utils\Environment;
+use App\Utils\Evaluation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,22 +34,6 @@ class Report extends Model
             ->toArray();
     }
 
-    public function getRecord(Model $model): array
-    {
-        return $this->columns
-            ->mapWithKeys(fn(Column $column) => [
-                $column->name => self::getValueByPath($model, $column->paths()[0])
-            ])
-            ->toArray();
-    }
-
-    public function getRecords(Collection $models): array
-    {
-        return $models
-            ->map(fn(Model $model) => $this->getRecord($model))
-            ->toArray();
-    }
-
     public function preview(Collection $models): array
     {
         return [
@@ -61,21 +47,21 @@ class Report extends Model
         ];
     }
 
-    private static function getValueByPath(mixed $data, string $path): mixed
+    public function getRecords(Collection $models): array
     {
-        $keys = explode('.', $path);
-        $current = $data;
+        return $models
+            ->map(fn(Model $model) => $this->getRecord($model))
+            ->toArray();
+    }
 
-        foreach ($keys as $key) {
-            if (is_array($current) && array_key_exists($key, $current)) {
-                $current = $current[$key];
-            } else if (is_object($current) && isset($current->$key)) {
-                $current = $current->$key;
-            } else {
-                return null;
-            }
-        }
+    public function getRecord(Model $model): array
+    {
+        $env = Environment::global($model, $this->entity_id);
 
-        return $current;
+        return $this->columns
+            ->mapWithKeys(fn(Column $column) => [
+                $column->name => Evaluation::evaluate($column->ast(), $env)
+            ])
+            ->toArray();
     }
 }

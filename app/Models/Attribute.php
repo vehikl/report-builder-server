@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Utils\AttributeType;
-use Illuminate\Database\Eloquent\Casts\Attribute as CastAttribute;
+use Illuminate\Database\Eloquent\Casts\Attribute as ModelAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,9 +19,9 @@ class Attribute extends Model
         return $this->belongsTo(Entity::class);
     }
 
-    public function type(): CastAttribute
+    public function type(): ModelAttribute
     {
-        return CastAttribute::make(
+        return ModelAttribute::make(
             get: fn(string $value) => new AttributeType($value)
         );
     }
