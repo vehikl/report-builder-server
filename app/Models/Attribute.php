@@ -22,7 +22,7 @@ class Attribute extends Model
     public function type(): ModelAttribute
     {
         return ModelAttribute::make(
-            get: fn(string $value) => new AttributeType($value)
+            get: fn (string $value) => new AttributeType($value)
         );
     }
 }

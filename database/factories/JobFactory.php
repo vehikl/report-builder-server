@@ -18,7 +18,7 @@ class JobFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->jobTitle()
+            'title' => fake()->jobTitle(),
         ];
     }
 }

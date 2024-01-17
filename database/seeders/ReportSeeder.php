@@ -21,7 +21,7 @@ class ReportSeeder extends Seeder
                     ['name' => 'Manager', 'expression' => ':manager.name'],
                     ['name' => 'Manager Job', 'expression' => ':manager.job.title'],
                     ['name' => 'Equity Rationale', 'expression' => ':equity.rationale'],
-                ]
+                ],
             ],
             [
                 'name' => 'Employee Managers',
@@ -29,8 +29,8 @@ class ReportSeeder extends Seeder
                 'columns' => [
                     ['name' => 'Name', 'expression' => ':name'],
                     ['name' => 'Manager', 'expression' => ':manager.name'],
-                ]
-            ]
+                ],
+            ],
         ];
 
         foreach ($reports as $report) {

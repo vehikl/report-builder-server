@@ -21,7 +21,7 @@ class Tokenizer
     }
 
     /** @throws Exception */
-    public function next(): array|null
+    public function next(): ?array
     {
         if ($this->cursor === strlen($this->data)) {
             return null;
@@ -33,7 +33,7 @@ class Tokenizer
             $matches = [];
             $doesMatch = preg_match($pattern, $str, $matches);
 
-            if (!$doesMatch) {
+            if (! $doesMatch) {
                 continue;
             }
 

@@ -7,7 +7,8 @@ use Exception;
 class AttributeType
 {
     public readonly string $name;
-    public readonly int|null $entityId;
+
+    public readonly ?int $entityId;
 
     /**
      * @throws Exception
@@ -16,6 +17,7 @@ class AttributeType
     {
         if (in_array($this->value, ['string', 'number', 'boolean'])) {
             $this->name = $this->value;
+
             return;
         }
 
@@ -24,6 +26,7 @@ class AttributeType
         if ($doesMatch) {
             $this->name = 'entity';
             $this->entityId = $matches[1];
+
             return;
         }
 
@@ -32,6 +35,7 @@ class AttributeType
         if ($doesMatch) {
             $this->name = 'collection';
             $this->entityId = $matches[1];
+
             return;
         }
 

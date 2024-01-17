@@ -17,7 +17,7 @@ class Evaluation
             return null;
         }
 
-        if (!is_numeric($left) || !is_numeric($right)) {
+        if (! is_numeric($left) || ! is_numeric($right)) {
             throw new Exception('This operation must be done with numbers');
         }
 
@@ -30,8 +30,9 @@ class Evaluation
                 return $left * $right;
             case '/':
                 if ($right === 0) {
-                    throw new Exception("Division by zero");
+                    throw new Exception('Division by zero');
                 }
+
                 return $left / $right;
             case '^':
                 return $left ** $right;
@@ -67,18 +68,21 @@ class Evaluation
             case 'binary':
                 $left = self::evaluate($node['left'], $env);
                 $right = self::evaluate($node['right'], $env);
+
                 return self::binaryEval($node['op'], $left, $right);
 
             case 'call':
                 $fn = $env->findFunction($node['fn']);
-                if (!is_callable($fn)) {
+                if (! is_callable($fn)) {
                     throw new Exception("Not a function: {$node['fn']}");
                 }
                 $args = array_map(fn ($arg) => self::evaluate($arg, $env), $node['args']);
+
                 return $fn(...$args);
 
             case 'attribute':
                 $path = (new AttributePath($env->entityId, $node['value']))->toDbPath(Attribute::query()->get());
+
                 return self::getValueByPath($env->model, $path);
 
             case 'identifier':
@@ -101,7 +105,7 @@ class Evaluation
         foreach ($keys as $key) {
             if (is_array($current) && array_key_exists($key, $current)) {
                 $current = $current[$key];
-            } else if (is_object($current) && isset($current->$key)) {
+            } elseif (is_object($current) && isset($current->$key)) {
                 $current = $current->$key;
             } else {
                 return null;
@@ -111,7 +115,7 @@ class Evaluation
         return $current;
     }
 
-    static public function getPath(string $path, $entityId): string
+    public static function getPath(string $path, $entityId): string
     {
         $attributes = Attribute::query()->get();
         $identifiers = explode('.', $path);

@@ -14,7 +14,7 @@ class ColumnFactory extends Factory
     {
         return [
             'name' => fake()->word,
-            'expression' => fake()->word . '.' . fake()->word
+            'expression' => fake()->word.'.'.fake()->word,
         ];
     }
 }

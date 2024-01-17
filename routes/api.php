@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Entities\ListEntities;
-use App\Http\Controllers\Reports\PreviewReport;
-use App\Http\Controllers\Reports\ShowReportPreview;
 use App\Http\Controllers\Reports\ListReports;
+use App\Http\Controllers\Reports\PreviewReport;
 use App\Http\Controllers\Reports\ShowReport;
+use App\Http\Controllers\Reports\ShowReportPreview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

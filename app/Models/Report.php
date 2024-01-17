@@ -29,7 +29,7 @@ class Report extends Model
     public function relations(): array
     {
         return $this->columns
-            ->flatMap(fn(Column $column) => $column->relations())
+            ->flatMap(fn (Column $column) => $column->relations())
             ->filter()
             ->toArray();
     }
@@ -39,9 +39,9 @@ class Report extends Model
         return [
             'name' => $this->name,
             'entity_id' => $this->entity_id,
-            'columns' => $this->columns->map(fn(Column $column) => [
+            'columns' => $this->columns->map(fn (Column $column) => [
                 'name' => $column->name,
-                'expression' => $column->expression
+                'expression' => $column->expression,
             ]),
             'records' => $this->getRecords($models),
         ];
@@ -50,7 +50,7 @@ class Report extends Model
     public function getRecords(Collection $models): array
     {
         return $models
-            ->map(fn(Model $model) => $this->getRecord($model))
+            ->map(fn (Model $model) => $this->getRecord($model))
             ->toArray();
     }
 
@@ -59,8 +59,8 @@ class Report extends Model
         $env = Environment::global($model, $this->entity_id);
 
         return $this->columns
-            ->mapWithKeys(fn(Column $column) => [
-                $column->name => Evaluation::evaluate($column->ast(), $env)
+            ->mapWithKeys(fn (Column $column) => [
+                $column->name => Evaluation::evaluate($column->ast(), $env),
             ])
             ->toArray();
     }

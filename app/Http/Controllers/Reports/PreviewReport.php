@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PreviewReport extends Controller
 {
-    public function __invoke(PreviewReportRequest $request):JsonResponse
+    public function __invoke(PreviewReportRequest $request): JsonResponse
     {
         $report = $request->report();
 

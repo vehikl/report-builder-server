@@ -14,7 +14,7 @@ class Column extends Model
 
     protected $fillable = [
         'name',
-        'expression'
+        'expression',
     ];
 
     public function report(): BelongsTo
@@ -41,7 +41,7 @@ class Column extends Model
         // TODO: cache this or receive as argument
         $attributes = Attribute::query()->get();
 
-        return array_map(fn(AttributePath $path) => $path->toDbPath($attributes), $attributePaths);
+        return array_map(fn (AttributePath $path) => $path->toDbPath($attributes), $attributePaths);
     }
 
     private function getAttributePaths(array $node): array
@@ -49,10 +49,10 @@ class Column extends Model
         return match ($node['type']) {
             'binary' => [
                 ...$this->getAttributePaths($node['left']),
-                ...$this->getAttributePaths($node['right'])
+                ...$this->getAttributePaths($node['right']),
             ],
             'call' => array_merge(...array_map(
-                fn(array $argNode) => $this->getAttributePaths($argNode),
+                fn (array $argNode) => $this->getAttributePaths($argNode),
                 $node['args']
             )),
             'attribute' => [new AttributePath($this->report->entity_id, $node['value'])],

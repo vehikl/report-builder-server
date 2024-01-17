@@ -23,9 +23,9 @@ class EmployeeFactory extends Factory
             'salary' => fake()->randomFloat(2, 70000, 150000),
             'bonus' => fake()->randomFloat(2, 10000, 20000),
             'manager_id' => null,
-            'job_code' => fn() => Job::factory(),
+            'job_code' => fn () => Job::factory(),
             'equity_amount' => fake()->randomFloat(2, 10000, 50000),
-            'equity_rationale' => fake()->sentence(4)
+            'equity_rationale' => fake()->sentence(4),
         ];
     }
 }

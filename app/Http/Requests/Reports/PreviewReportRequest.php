@@ -16,14 +16,14 @@ class PreviewReportRequest extends FormRequest
             'entity_id' => ['required', 'exists:entities,id'],
             'columns' => ['required', 'array', 'filled'],
             'columns.*.name' => ['required', 'string'],
-            'columns.*.expression' => ['required', 'string']
+            'columns.*.expression' => ['required', 'string'],
         ];
     }
 
     public function columns(): Collection
     {
         return collect($this->input('columns'))
-            ->map(fn(array $column) => Column::query()->make($column));
+            ->map(fn (array $column) => Column::query()->make($column));
     }
 
     public function report(): Report
@@ -32,9 +32,9 @@ class PreviewReportRequest extends FormRequest
 
         return $report->forceFill([
             'name' => $this->input('name'),
-            'entity_id' => (int)$this->input('entity_id'),
+            'entity_id' => (int) $this->input('entity_id'),
             'columns' => $this->columns()
-                ->map(fn(Column $column) => $column->forceFill(['report' => $report]))
+                ->map(fn (Column $column) => $column->forceFill(['report' => $report])),
         ]);
     }
 }
