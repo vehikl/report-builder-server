@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,19 +10,19 @@ class Environment
 {
     public static function global(Model $model, int $entityId): Environment
     {
-        return new Environment($model, $entityId, [], [
-            'if' => fn($condition, $then, $otherwise) => $condition ? $then : $otherwise
-        ]);
+        $values = ['current_year' => (new Carbon())->year];
+        $functions = ['if' => fn ($condition, $then, $otherwise) => $condition ? $then : $otherwise];
+
+        return new Environment($model, $entityId, $values, $functions);
     }
 
     public function __construct(
-        public readonly Model             $model,
-        public readonly int               $entityId,
-        private readonly array            $values = [],
-        private readonly array            $functions = [],
-        private readonly Environment|null $parent = null
-    )
-    {
+        public readonly Model $model,
+        public readonly int $entityId,
+        private readonly array $values = [],
+        private readonly array $functions = [],
+        private readonly ?Environment $parent = null
+    ) {
     }
 
     public function findValue($identifier)
