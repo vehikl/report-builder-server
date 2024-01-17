@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Utils\AttributePath;
 use App\Utils\ExpressionParser;
+use App\Utils\Expressions\Expression;
+use Illuminate\Database\Eloquent\Casts\Attribute as ModelAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,39 +25,25 @@ class Column extends Model
 
     public function relations(): array
     {
+        // TODO: cache this or receive as argument
+        $attributes = Attribute::query()->get();
+
+        $dbPaths = $this->expression->getDbPaths($this->report->entity_id, $attributes);
+
         return array_map(function (string $path) {
             return implode('.', array_slice(explode('.', $path), 0, -1)) ?: null;
-        }, $this->dbPaths());
+        }, $dbPaths);
+    }
+
+    protected function expression(): ModelAttribute
+    {
+        return ModelAttribute::make(
+            get: fn (string $value) => Expression::make(json_decode($value, true)),
+        );
     }
 
     public function ast(): array
     {
         return (new ExpressionParser())->read($this->expression);
-    }
-
-    private function dbPaths(): array
-    {
-        $attributePaths = $this->getAttributePaths($this->ast());
-
-        // TODO: cache this or receive as argument
-        $attributes = Attribute::query()->get();
-
-        return array_map(fn (AttributePath $path) => $path->toDbPath($attributes), $attributePaths);
-    }
-
-    private function getAttributePaths(array $node): array
-    {
-        return match ($node['type']) {
-            'binary' => [
-                ...$this->getAttributePaths($node['left']),
-                ...$this->getAttributePaths($node['right']),
-            ],
-            'call' => array_merge(...array_map(
-                fn (array $argNode) => $this->getAttributePaths($argNode),
-                $node['args']
-            )),
-            'attribute' => [new AttributePath($this->report->entity_id, $node['value'])],
-            default => []
-        };
     }
 }

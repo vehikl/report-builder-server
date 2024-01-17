@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('report_id')->constrained();
-            $table->string('expression');
+            $table->json('expression');
             $table->timestamps();
         });
     }
