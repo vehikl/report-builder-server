@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Utils\ExpressionParser;
 use App\Utils\Expressions\Expression;
 use Illuminate\Database\Eloquent\Casts\Attribute as ModelAttribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/** @property Expression $expression */
 class Column extends Model
 {
     use HasFactory;
@@ -39,11 +39,15 @@ class Column extends Model
     {
         return ModelAttribute::make(
             get: fn (string $value) => Expression::make(json_decode($value, true)),
+            set: fn (Expression|array $value) => json_encode(is_array($value) ? $value : $value->toArray()),
         );
     }
 
-    public function ast(): array
+    public function toArray(): array
     {
-        return (new ExpressionParser())->read($this->expression);
+        return [
+            ...parent::toArray(),
+            'expression' => $this->expression->toArray(),
+        ];
     }
 }

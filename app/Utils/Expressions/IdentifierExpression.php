@@ -16,6 +16,14 @@ class IdentifierExpression extends Expression
         return [];
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type' => 'identifier',
+            'value' => $this->identifier,
+        ];
+    }
+
     public function evaluate(Environment $environment): mixed
     {
         return $environment->findValue($this->identifier);

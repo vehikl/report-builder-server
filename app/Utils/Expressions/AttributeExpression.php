@@ -17,6 +17,14 @@ class AttributeExpression extends Expression
         return [(new AttributePath($entityId, $this->path))->toDbPath($attributes)];
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type' => 'attribute',
+            'value' => $this->path,
+        ];
+    }
+
     public function evaluate(Environment $environment): mixed
     {
         $dbPath = (new AttributePath($environment->entityId, $this->path))->toDbPath($environment->attributes);

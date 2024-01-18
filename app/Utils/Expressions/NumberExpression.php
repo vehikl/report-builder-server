@@ -20,6 +20,14 @@ class NumberExpression extends Expression
         return [];
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type' => 'number',
+            'value' => $this->value,
+        ];
+    }
+
     public function evaluate(Environment $environment): float
     {
         return floatval($this->value);

@@ -16,6 +16,14 @@ class StringExpression extends Expression
         return [];
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type' => 'string',
+            'value' => $this->value,
+        ];
+    }
+
     public function evaluate(Environment $environment): string
     {
         return $this->value;

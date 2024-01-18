@@ -16,7 +16,7 @@ class PreviewReportRequest extends FormRequest
             'entity_id' => ['required', 'exists:entities,id'],
             'columns' => ['required', 'array', 'filled'],
             'columns.*.name' => ['required', 'string'],
-            'columns.*.expression' => ['required', 'string'],
+            'columns.*.expression' => ['required', 'array'],
         ];
     }
 

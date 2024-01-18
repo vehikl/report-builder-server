@@ -20,4 +20,4 @@ Route::prefix('reports')->group(function () {
     Route::get('{report}/preview', ShowReportPreview::class);
 });
 
-Route::get('preview-report', PreviewReport::class);
+Route::post('preview-report', PreviewReport::class);

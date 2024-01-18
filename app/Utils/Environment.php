@@ -2,7 +2,6 @@
 
 namespace App\Utils;
 
-use App\Models\Attribute;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -10,9 +9,8 @@ use Illuminate\Support\Collection;
 
 class Environment
 {
-    public static function global(Model $model, int $entityId): Environment
+    public static function global(Model $model, int $entityId, Collection $attributes): Environment
     {
-        $attributes = Attribute::query()->get();
         $values = ['current_year' => (new Carbon())->year];
         $functions = ['if' => fn ($condition, $then, $otherwise) => $condition ? $then : $otherwise];
 

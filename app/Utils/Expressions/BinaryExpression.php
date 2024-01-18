@@ -26,6 +26,16 @@ class BinaryExpression extends Expression
         ];
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type' => 'binary',
+            'op' => $this->operator,
+            'left' => $this->left->toArray(),
+            'right' => $this->right->toArray(),
+        ];
+    }
+
     public function evaluate(Environment $environment): mixed
     {
 

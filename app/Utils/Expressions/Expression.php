@@ -12,6 +12,8 @@ abstract class Expression
 
     abstract public function evaluate(Environment $environment): mixed;
 
+    abstract public function toArray(): array;
+
     public static function make(array $node): Expression
     {
         return match ($node['type']) {

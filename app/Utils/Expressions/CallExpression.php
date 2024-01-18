@@ -26,6 +26,15 @@ class CallExpression extends Expression
         ));
     }
 
+    public function toArray(): array
+    {
+        return [
+            'type' => 'call',
+            'fn' => $this->identifier,
+            'args' => array_map(fn (Expression $expression) => $expression->toArray(), $this->args),
+        ];
+    }
+
     public function evaluate(Environment $environment): mixed
     {
         $function = $environment->findFunction($this->identifier);

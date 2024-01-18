@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Utils\Environment;
-use App\Utils\Evaluation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,31 +35,31 @@ class Report extends Model
 
     public function preview(Collection $models): array
     {
+        $attributes = Attribute::query()->get();
+
         return [
             'name' => $this->name,
             'entity_id' => $this->entity_id,
             'columns' => $this->columns->map(fn (Column $column) => [
                 'name' => $column->name,
-                'expression' => $column->expression,
+                'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getRecords($models),
+            'records' => $this->getRecords($models, $attributes),
         ];
     }
 
-    public function getRecords(Collection $models): array
+    public function getRecords(Collection $models, Collection $attributes): array
     {
         return $models
-            ->map(fn (Model $model) => $this->getRecord($model))
+            ->map(fn (Model $model) => $this->getRecord(Environment::global($model, $this->entity_id, $attributes)))
             ->toArray();
     }
 
-    public function getRecord(Model $model): array
+    public function getRecord(Environment $environment): array
     {
-        $env = Environment::global($model, $this->entity_id);
-
         return $this->columns
             ->mapWithKeys(fn (Column $column) => [
-                $column->name => Evaluation::evaluate($column->ast(), $env),
+                $column->name => $column->expression->evaluate($environment),
             ])
             ->toArray();
     }
