@@ -3,30 +3,16 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Employee;
-use App\Models\Job;
+use Database\Seeders\Data\EmployeeSeeder;
+use Database\Seeders\Structure\EntitySeeder;
+use Database\Seeders\Structure\ReportSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $managerJob = Job::factory()->create(['title' => 'Manager']);
-
-        $managers = Employee::factory()
-            ->count(2)
-            ->create(['job_code' => $managerJob]);
-
-        Employee::factory()->count(4)->sequence(
-            ['manager_id' => $managers->get(0)],
-            [
-                'manager_id' => $managers->get(1),
-                'equity_amount' => null,
-                'equity_rationale' => null,
-            ],
-        )
-            ->create();
-
+        $this->call(EmployeeSeeder::class);
         $this->call(EntitySeeder::class);
         $this->call(ReportSeeder::class);
     }

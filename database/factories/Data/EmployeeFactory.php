@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Data;
 
-use App\Models\Employee;
-use App\Models\Job;
+use App\Models\Data\Employee;
+use App\Models\Data\Job;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

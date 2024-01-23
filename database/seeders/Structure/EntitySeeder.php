@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Structure;
 
-use App\Models\Attribute;
-use App\Models\Entity;
+use App\Models\Structure\Attribute;
+use App\Models\Structure\Entity;
 use Illuminate\Database\Seeder;
 
 class EntitySeeder extends Seeder

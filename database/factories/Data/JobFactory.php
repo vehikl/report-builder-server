@@ -1,14 +1,14 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Data;
 
-use App\Models\Entity;
+use App\Models\Data\Job;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Entity>
+ * @extends Factory<Job>
  */
-class EntityFactory extends Factory
+class JobFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,6 +17,8 @@ class EntityFactory extends Factory
      */
     public function definition(): array
     {
-        return [];
+        return [
+            'title' => fake()->jobTitle(),
+        ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Structure;
 
 use App\Utils\Expressions\Expression;
 use Illuminate\Database\Eloquent\Casts\Attribute as ModelAttribute;
