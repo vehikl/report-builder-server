@@ -35,7 +35,7 @@ class Report extends Model
 
     public function preview(Collection $models): array
     {
-        $attributes = Attribute::query()->get();
+        $fields = Field::query()->get();
 
         return [
             'name' => $this->name,
@@ -44,14 +44,14 @@ class Report extends Model
                 'name' => $column->name,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getRecords($models, $attributes),
+            'records' => $this->getRecords($models, $fields),
         ];
     }
 
-    public function getRecords(Collection $models, Collection $attributes): array
+    public function getRecords(Collection $models, Collection $fields): array
     {
         return $models
-            ->map(fn (Model $model) => $this->getRecord(Environment::global($model, $this->entity_id, $attributes)))
+            ->map(fn (Model $model) => $this->getRecord(Environment::global($model, $this->entity_id, $fields)))
             ->toArray();
     }
 

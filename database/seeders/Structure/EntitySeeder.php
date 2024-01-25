@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Structure;
 
-use App\Models\Structure\Attribute;
+use App\Models\Structure\Field;
 use App\Models\Structure\Entity;
 use Illuminate\Database\Seeder;
 
@@ -11,12 +11,12 @@ class EntitySeeder extends Seeder
     public function run(): void
     {
         foreach (config('entities') as $entity) {
-            $attributes = $entity['attributes'];
+            $fields = $entity['fields'];
 
             Entity::factory()
-                ->has(Attribute::factory()
-                    ->count(count($attributes))
-                    ->sequence(...$attributes))
+                ->has(Field::factory()
+                    ->count(count($fields))
+                    ->sequence(...$fields))
                 ->create([
                     'table' => $entity['table'],
                     'name' => $entity['name'],

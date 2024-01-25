@@ -9,18 +9,18 @@ use Illuminate\Support\Collection;
 
 class Environment
 {
-    public static function global(Model $model, int $entityId, Collection $attributes): Environment
+    public static function global(Model $model, int $entityId, Collection $fields): Environment
     {
         $values = ['current_year' => (new Carbon())->year];
         $functions = ['if' => fn ($condition, $then, $otherwise) => $condition ? $then : $otherwise];
 
-        return new Environment($model, $entityId, $attributes, $values, $functions);
+        return new Environment($model, $entityId, $fields, $values, $functions);
     }
 
     public function __construct(
         public readonly Model $model,
         public readonly int $entityId,
-        public readonly Collection $attributes,
+        public readonly Collection $fields,
         private readonly array $values = [],
         private readonly array $functions = [],
         private readonly ?Environment $parent = null

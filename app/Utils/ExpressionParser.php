@@ -10,7 +10,7 @@ class ExpressionParser
         ["/^\s+/", null],
         ["/^-?\d+(?:\.\d+)?\b/", 'NUMBER'],
         ["/^[a-zA-Z]\w*/", 'IDENT'],
-        ["/^:[a-zA-Z]\w*(\.[a-zA-Z]\w*)*/", 'ATTRIBUTE'],
+        ["/^:[a-zA-Z]\w*(\.[a-zA-Z]\w*)*/", 'FIELD'],
         ['/^"[^"]*"/', 'STRING'],
         ["/^\+/", '+'],
         ['/^-/', '-'],
@@ -150,10 +150,10 @@ class ExpressionParser
             return $expr;
         }
 
-        if ($this->is('ATTRIBUTE')) {
-            $attribute = $this->eat('ATTRIBUTE');
+        if ($this->is('FIELD')) {
+            $field = $this->eat('FIELD');
 
-            return ['type' => 'attribute', 'value' => substr($attribute['token'], 1)];
+            return ['type' => 'field', 'value' => substr($field['token'], 1)];
         }
 
         if ($this->is('IDENT')) {

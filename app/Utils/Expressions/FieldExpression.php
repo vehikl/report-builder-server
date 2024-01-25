@@ -2,32 +2,32 @@
 
 namespace App\Utils\Expressions;
 
-use App\Utils\AttributePath;
+use App\Utils\FieldPath;
 use App\Utils\Environment;
 use Illuminate\Support\Collection;
 
-class AttributeExpression extends Expression
+class FieldExpression extends Expression
 {
     public function __construct(public readonly string $path)
     {
     }
 
-    public function getDbPaths(int $entityId, Collection $attributes): array
+    public function getDbPaths(int $entityId, Collection $fields): array
     {
-        return [(new AttributePath($entityId, $this->path))->toDbPath($attributes)];
+        return [(new FieldPath($entityId, $this->path))->toDbPath($fields)];
     }
 
     public function toArray(): array
     {
         return [
-            'type' => 'attribute',
+            'type' => 'field',
             'value' => $this->path,
         ];
     }
 
     public function evaluate(Environment $environment): mixed
     {
-        $dbPath = (new AttributePath($environment->entityId, $this->path))->toDbPath($environment->attributes);
+        $dbPath = (new FieldPath($environment->entityId, $this->path))->toDbPath($environment->fields);
 
         return self::getValueByPath($environment->model, $dbPath);
     }

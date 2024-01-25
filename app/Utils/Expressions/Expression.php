@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 abstract class Expression
 {
-    abstract public function getDbPaths(int $entityId, Collection $attributes): array;
+    abstract public function getDbPaths(int $entityId, Collection $fields): array;
 
     abstract public function evaluate(Environment $environment): mixed;
 
@@ -19,7 +19,7 @@ abstract class Expression
         return match ($node['type']) {
             'binary' => new BinaryExpression($node['op'], self::make($node['left']), self::make($node['right'])),
             'call' => new CallExpression($node['fn'], ...self::parseMany($node['args'])),
-            'attribute' => new AttributeExpression($node['value']),
+            'field' => new FieldExpression($node['value']),
             'identifier' => new IdentifierExpression($node['value']),
             'number' => new NumberExpression($node['value']),
             'string' => new StringExpression($node['value']),

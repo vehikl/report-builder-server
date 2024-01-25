@@ -2,13 +2,13 @@
 
 namespace Database\Factories\Structure;
 
-use App\Models\Structure\Attribute;
+use App\Models\Structure\Field;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Attribute>
+ * @extends Factory<Field>
  */
-class AttributeFactory extends Factory
+class FieldFactory extends Factory
 {
     /**
      * Define the model's default state.

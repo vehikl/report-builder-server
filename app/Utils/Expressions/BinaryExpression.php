@@ -18,11 +18,11 @@ class BinaryExpression extends Expression
         }
     }
 
-    public function getDbPaths(int $entityId, Collection $attributes): array
+    public function getDbPaths(int $entityId, Collection $fields): array
     {
         return [
-            ...$this->left->getDbPaths($entityId, $attributes),
-            ...$this->right->getDbPaths($entityId, $attributes),
+            ...$this->left->getDbPaths($entityId, $fields),
+            ...$this->right->getDbPaths($entityId, $fields),
         ];
     }
 

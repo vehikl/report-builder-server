@@ -4,7 +4,7 @@ namespace App\Utils;
 
 use Exception;
 
-class AttributeType
+class FieldType
 {
     public readonly string $name;
 

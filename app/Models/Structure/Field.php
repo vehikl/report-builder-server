@@ -2,13 +2,13 @@
 
 namespace App\Models\Structure;
 
-use App\Utils\AttributeType;
-use Illuminate\Database\Eloquent\Casts\Attribute as ModelAttribute;
+use App\Utils\FieldType;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Attribute extends Model
+class Field extends Model
 {
     use HasFactory;
 
@@ -19,10 +19,10 @@ class Attribute extends Model
         return $this->belongsTo(Entity::class);
     }
 
-    public function type(): ModelAttribute
+    public function type(): Attribute
     {
-        return ModelAttribute::make(
-            get: fn (string $value) => new AttributeType($value)
+        return Attribute::make(
+            get: fn (string $value) => new FieldType($value)
         );
     }
 }

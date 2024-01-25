@@ -4,7 +4,7 @@ namespace Database\Seeders\Structure;
 
 use App\Models\Structure\Column;
 use App\Models\Structure\Report;
-use App\Utils\Expressions\AttributeExpression;
+use App\Utils\Expressions\FieldExpression;
 use Illuminate\Database\Seeder;
 
 class ReportSeeder extends Seeder
@@ -16,20 +16,20 @@ class ReportSeeder extends Seeder
                 'name' => 'Employees',
                 'entity_id' => 2,
                 'columns' => [
-                    ['name' => 'Name', 'expression' => new AttributeExpression('name')],
-                    ['name' => 'Salary', 'expression' => new AttributeExpression('salary')],
-                    ['name' => 'Job', 'expression' => new AttributeExpression('job.title')],
-                    ['name' => 'Manager', 'expression' => new AttributeExpression('manager.name')],
-                    ['name' => 'Manager Job', 'expression' => new AttributeExpression('manager.job.title')],
-                    ['name' => 'Equity Rationale', 'expression' => new AttributeExpression('equity.rationale')],
+                    ['name' => 'Name', 'expression' => new FieldExpression('name')],
+                    ['name' => 'Salary', 'expression' => new FieldExpression('salary')],
+                    ['name' => 'Job', 'expression' => new FieldExpression('job.title')],
+                    ['name' => 'Manager', 'expression' => new FieldExpression('manager.name')],
+                    ['name' => 'Manager Job', 'expression' => new FieldExpression('manager.job.title')],
+                    ['name' => 'Equity Rationale', 'expression' => new FieldExpression('equity.rationale')],
                 ],
             ],
             [
                 'name' => 'Employee Managers',
                 'entity_id' => 2,
                 'columns' => [
-                    ['name' => 'Name', 'expression' => new AttributeExpression('name')],
-                    ['name' => 'Manager', 'expression' => new AttributeExpression('manager.name')],
+                    ['name' => 'Name', 'expression' => new FieldExpression('name')],
+                    ['name' => 'Manager', 'expression' => new FieldExpression('manager.name')],
                 ],
             ],
         ];

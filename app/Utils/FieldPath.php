@@ -4,25 +4,25 @@ namespace App\Utils;
 
 use Illuminate\Support\Collection;
 
-class AttributePath
+class FieldPath
 {
     public function __construct(public readonly int $entityId, public readonly string $value)
     {
     }
 
     // TODO: pass entityId here instead of the constructor
-    public function toDbPath(Collection $attributes): string
+    public function toDbPath(Collection $fields): string
     {
 
         $identifiers = explode('.', $this->value);
         $paths = [];
         $currentEntityId = $this->entityId;
         foreach ($identifiers as $identifier) {
-            $attribute = $attributes->where('entity_id', $currentEntityId)->where('identifier', $identifier)->first();
-            $paths[] = $attribute->path;
+            $field = $fields->where('entity_id', $currentEntityId)->where('identifier', $identifier)->first();
+            $paths[] = $field->path;
 
-            $currentEntityId = match ($attribute->type->name) {
-                'entity', 'collection' => $attribute->type->entityId,
+            $currentEntityId = match ($field->type->name) {
+                'entity', 'collection' => $field->type->entityId,
                 default => null
             };
         }

@@ -11,7 +11,7 @@ class StringExpression extends Expression
     {
     }
 
-    public function getDbPaths(int $entityId, Collection $attributes): array
+    public function getDbPaths(int $entityId, Collection $fields): array
     {
         return [];
     }

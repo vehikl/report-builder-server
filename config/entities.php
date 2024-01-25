@@ -4,7 +4,7 @@ return [
     1 => [
         'table' => 'jobs',
         'name' => 'Job',
-        'attributes' => [
+        'fields' => [
             /*  1 */ ['identifier' => 'code', 'path' => 'code', 'name' => 'Code', 'type' => 'string'],
             /*  2 */ ['identifier' => 'title', 'path' => 'title', 'name' => 'Title', 'type' => 'string'],
             /*  3 */ ['identifier' => 'employees', 'path' => 'employees', 'name' => 'Employees', 'type' => 'collection:2'],
@@ -13,7 +13,7 @@ return [
     2 => [
         'table' => 'employees',
         'name' => 'Employee',
-        'attributes' => [
+        'fields' => [
             /*  4 */ ['identifier' => 'id', 'path' => 'id', 'name' => 'Id', 'type' => 'number'],
             /*  5 */ ['identifier' => 'name', 'path' => 'name', 'name' => 'Name', 'type' => 'string'],
             /*  6 */ ['identifier' => 'salary', 'path' => 'salary', 'name' => 'Salary', 'type' => 'number'],
@@ -29,7 +29,7 @@ return [
     3 => [
         'table' => 'employees',
         'name' => 'Equity',
-        'attributes' => [
+        'fields' => [
             /* 14 */ ['identifier' => 'amount', 'path' => 'equity_amount', 'name' => 'Amount', 'type' => 'number'],
             /* 15 */ ['identifier' => 'rationale', 'path' => 'equity_rationale', 'name' => 'Rationale', 'type' => 'string'],
         ],
