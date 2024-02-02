@@ -45,7 +45,9 @@ class Report extends Model
 
         $fields = Field::query()->get();
 
+        DataModel::disableLazyLoading();
         $records = $this->getRecords($models, $fields);
+        DataModel::enableLazyLoading();
 
         return [
             'name' => $this->name,
