@@ -15,11 +15,11 @@ class FieldPath
     {
 
         $identifiers = explode('.', $this->value);
-        $paths = [];
+        $pathKeys = [];
         $currentEntityId = $this->entityId;
         foreach ($identifiers as $identifier) {
             $field = $fields->where('entity_id', $currentEntityId)->where('identifier', $identifier)->first();
-            $paths[] = $field->path;
+            $pathKeys[] = $field->path;
 
             $currentEntityId = match ($field->type->name) {
                 'entity', 'collection' => $field->type->entityId,
@@ -27,6 +27,6 @@ class FieldPath
             };
         }
 
-        return implode('.', array_filter($paths));
+        return implode('.', array_filter($pathKeys));
     }
 }

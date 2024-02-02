@@ -2,6 +2,7 @@
 
 namespace App\Utils\Expressions;
 
+use App\Models\Structure\Entity;
 use App\Utils\Environment;
 use Exception;
 use Illuminate\Support\Collection;
@@ -18,10 +19,10 @@ class CallExpression extends Expression
         $this->args = $args;
     }
 
-    public function getDbPaths(int $entityId, Collection $fields): array
+    public function getDbPaths(Entity $entity, Collection $fields): array
     {
         return array_merge(...array_map(
-            fn (Expression $expression) => $expression->getDbPaths($entityId, $fields),
+            fn (Expression $expression) => $expression->getDbPaths($entity, $fields),
             $this->args
         ));
     }

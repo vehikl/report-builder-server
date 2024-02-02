@@ -23,12 +23,13 @@ class Column extends Model
         return $this->belongsTo(Report::class);
     }
 
+    /** @return string[] */
     public function relations(): array
     {
         // TODO: cache this or receive as argument
         $fields = Field::query()->get();
 
-        $dbPaths = $this->expression->getDbPaths($this->report->entity_id, $fields);
+        $dbPaths = $this->expression->getDbPaths($this->report->entity, $fields);
 
         return array_map(function (string $path) {
             return implode('.', array_slice(explode('.', $path), 0, -1)) ?: null;

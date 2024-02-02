@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class Report extends Model
 {
@@ -37,11 +36,7 @@ class Report extends Model
 
     public function preview(): array
     {
-        $ModelClass = config('models')[$this->entity->getAttribute('table')];
-
-        Log::debug('relations', $this->relations());
-
-        $models = $ModelClass::query()->with($this->relations())->get();
+        $models = $this->entity->getModelClass()::query()->with($this->relations())->get();
 
         $fields = Field::query()->get();
 

@@ -2,13 +2,14 @@
 
 namespace App\Utils\Expressions;
 
+use App\Models\Structure\Entity;
 use App\Utils\Environment;
 use Exception;
 use Illuminate\Support\Collection;
 
 abstract class Expression
 {
-    abstract public function getDbPaths(int $entityId, Collection $fields): array;
+    abstract public function getDbPaths(Entity $entity, Collection $fields): array;
 
     abstract public function evaluate(Environment $environment): mixed;
 

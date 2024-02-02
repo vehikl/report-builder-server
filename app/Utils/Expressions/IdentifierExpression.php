@@ -2,6 +2,7 @@
 
 namespace App\Utils\Expressions;
 
+use App\Models\Structure\Entity;
 use App\Utils\Environment;
 use Illuminate\Support\Collection;
 
@@ -11,7 +12,7 @@ class IdentifierExpression extends Expression
     {
     }
 
-    public function getDbPaths(int $entityId, Collection $fields): array
+    public function getDbPaths(Entity $entity, Collection $fields): array
     {
         return [];
     }

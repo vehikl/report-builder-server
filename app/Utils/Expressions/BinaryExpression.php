@@ -2,6 +2,7 @@
 
 namespace App\Utils\Expressions;
 
+use App\Models\Structure\Entity;
 use App\Utils\Environment;
 use Exception;
 use Illuminate\Support\Collection;
@@ -18,11 +19,11 @@ class BinaryExpression extends Expression
         }
     }
 
-    public function getDbPaths(int $entityId, Collection $fields): array
+    public function getDbPaths(Entity $entity, Collection $fields): array
     {
         return [
-            ...$this->left->getDbPaths($entityId, $fields),
-            ...$this->right->getDbPaths($entityId, $fields),
+            ...$this->left->getDbPaths($entity, $fields),
+            ...$this->right->getDbPaths($entity, $fields),
         ];
     }
 

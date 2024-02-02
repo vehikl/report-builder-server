@@ -16,4 +16,10 @@ class Entity extends Model
     {
         return $this->hasMany(Field::class);
     }
+
+    /** @return class-string */
+    public function getModelClass(): string
+    {
+        return config('models')[$this->getAttribute('table')];
+    }
 }

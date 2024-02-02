@@ -2,6 +2,8 @@
 
 namespace App\Utils\Expressions;
 
+use App\Models\Structure\Entity;
+use App\Utils\DependencyTracker;
 use App\Utils\Environment;
 use App\Utils\FieldPath;
 use Illuminate\Support\Collection;
@@ -12,9 +14,13 @@ class FieldExpression extends Expression
     {
     }
 
-    public function getDbPaths(int $entityId, Collection $fields): array
+    public function getDbPaths(Entity $entity, Collection $fields): array
     {
-        return [(new FieldPath($entityId, $this->path))->toDbPath($fields)];
+        $ModelClass = $entity->getModelClass();
+
+        $paths = (new FieldPath($entity->id, $this->path))->toDbPath($fields);
+
+        return DependencyTracker::getDependencies(new $ModelClass(), $paths);
     }
 
     public function toArray(): array
