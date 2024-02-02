@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Structure;
 
-use App\Models\Structure\Field;
 use App\Models\Structure\Entity;
+use App\Models\Structure\Field;
 use Illuminate\Database\Seeder;
 
 class EntitySeeder extends Seeder

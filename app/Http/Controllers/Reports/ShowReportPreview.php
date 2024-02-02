@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
-use App\Models\Data\Employee;
 use App\Models\Structure\Report;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,8 +12,6 @@ class ShowReportPreview extends Controller
 {
     public function __invoke(Request $request, Report $report): JsonResponse
     {
-        $employees = Employee::query()->with($report->relations())->get();
-
-        return JsonResource::make($report->preview($employees))->toResponse($request);
+        return JsonResource::make($report->preview())->toResponse($request);
     }
 }

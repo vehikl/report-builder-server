@@ -19,7 +19,7 @@ class Field extends Model
         return $this->belongsTo(Entity::class);
     }
 
-    public function type(): Attribute
+    protected function type(): Attribute
     {
         return Attribute::make(
             get: fn (string $value) => new FieldType($value)

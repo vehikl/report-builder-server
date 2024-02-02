@@ -2,12 +2,14 @@
 
 namespace App\Models\Structure;
 
+use App\Models\Data\DataModel;
 use App\Utils\Environment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class Report extends Model
 {
@@ -33,9 +35,17 @@ class Report extends Model
             ->toArray();
     }
 
-    public function preview(Collection $models): array
+    public function preview(): array
     {
+        $ModelClass = config('models')[$this->entity->getAttribute('table')];
+
+        Log::debug('relations', $this->relations());
+
+        $models = $ModelClass::query()->with($this->relations())->get();
+
         $fields = Field::query()->get();
+
+        $records = $this->getRecords($models, $fields);
 
         return [
             'name' => $this->name,
@@ -44,7 +54,7 @@ class Report extends Model
                 'name' => $column->name,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getRecords($models, $fields),
+            'records' => $records,
         ];
     }
 

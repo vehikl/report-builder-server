@@ -2,8 +2,8 @@
 
 namespace App\Utils\Expressions;
 
-use App\Utils\FieldPath;
 use App\Utils\Environment;
+use App\Utils\FieldPath;
 use Illuminate\Support\Collection;
 
 class FieldExpression extends Expression
