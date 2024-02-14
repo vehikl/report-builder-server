@@ -65,7 +65,7 @@ class Employee extends DataModel
         return $this->bonus * $times;
     }
 
-    #[Dependencies('job.title', 'job.code')]
+    #[Dependencies('name', 'job.title', 'job.code')]
     protected function nameWithJob(): Attribute
     {
         return Attribute::make(
