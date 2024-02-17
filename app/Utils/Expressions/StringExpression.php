@@ -25,6 +25,11 @@ class StringExpression extends Expression
         ];
     }
 
+    public function toSql(Entity $entity, Collection $fields): string
+    {
+        return "'$this->value'";
+    }
+
     public function evaluate(Environment $environment): string
     {
         return $this->value;

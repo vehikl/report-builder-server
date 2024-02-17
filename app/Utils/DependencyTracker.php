@@ -2,14 +2,14 @@
 
 namespace App\Utils;
 
-use App\Utils\PhpAttributes\Dependencies;
+use App\Utils\Sql\ExtendedAttribute;
+use App\Utils\Sql\ExtendedBelongsTo;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use ReflectionClass;
-use ReflectionMethod;
 
 class DependencyTracker
 {
@@ -32,27 +32,15 @@ class DependencyTracker
             return [$currentKey];
         }
 
-        $method = self::getMethod($model, $currentKey);
+        $attribute = self::getSqlAttribute($model, $currentKey);
 
-        if ($method) {
-            return self::getMethodDependencies($model, $method);
+        if ($attribute) {
+            return array_merge(
+                ...array_map(fn (string $path) => self::getDependencies($model, $path), $attribute->getSqlDependencies())
+            );
         }
 
-        throw new Exception("The key $currentKey is neither a column, a method, or a mutator in ".$model::class);
-    }
-
-    /** @return string[] */
-    private static function getMethodDependencies(Model $model, ReflectionMethod $method): array
-    {
-        $attribute = ($method->getAttributes(Dependencies::class)[0] ?? null)?->newInstance();
-
-        if (! $attribute) {
-            throw new Exception("The method $method->name in ".$model::class.' does not have any dependencies.');
-        }
-
-        return array_merge(
-            ...array_map(fn (string $path) => self::getDependencies($model, $path), $attribute->paths)
-        );
+        throw new Exception("The key $currentKey is neither a column, or an sql attribute in ".$model::class);
     }
 
     /** @return string[] */
@@ -67,11 +55,38 @@ class DependencyTracker
         /** @var Relation $relation */
         $relation = $model->$currentKey();
 
+        if (! is_a($relation, ExtendedBelongsTo::class) || ! $relation->hasLeftJoinDefinition()) {
+            throw new Exception("The relation $currentKey does not have a left join definition in ".$model::class);
+        }
+
+        $relationDependencies = $relation->getLeftJoinDependencies();
+
+        $originDependencies = array_filter($relationDependencies, fn (string $value) => explode('.', $value)[0] !== $currentKey);
+        $relatedDependencies = array_filter($relationDependencies, fn (string $value) => explode('.', $value)[0] === $currentKey);
+
+        $originPaths = array_merge(...array_map(
+            fn (string $value) => self::getDependencies($model, $value),
+            $originDependencies
+        ));
+
+        // TODO: simplify with $paths
+        $relatedPaths = array_merge(...array_map(
+            function (string $value) use ($relation) {
+                $remainingKeys = array_slice(explode('.', $value), 1);
+
+                return self::getDependencies($relation->getRelated(), implode('.', $remainingKeys));
+            },
+            $relatedDependencies
+        ));
+
         $remainingKeys = array_slice($pathKeys, 1);
 
         $paths = self::getDependencies($relation->getRelated(), implode('.', $remainingKeys));
 
-        return array_map(fn (string $path) => "$currentKey.$path", $paths);
+        return array_merge(
+            array_map(fn (string $path) => "$currentKey.$path", array_merge($paths, $relatedPaths)),
+            $originPaths
+        );
     }
 
     private static function isColumn(Model $model, string $key): bool
@@ -79,11 +94,18 @@ class DependencyTracker
         return in_array($key, Schema::getColumnListing($model->getTable()));
     }
 
-    private static function getMethod(Model $model, string $key): ?ReflectionMethod
+    private static function getSqlAttribute(Model $model, $name): ?ExtendedAttribute
     {
-        $methodName = $model->hasAttributeMutator($key) ? Str::camel($key) : $key;
+        if (! $model->hasAttributeMutator($name)) {
+            return null;
+        }
 
-        return collect((new ReflectionClass($model))->getMethods())
-            ->first(fn (ReflectionMethod $method) => $method->getName() === $methodName);
+        $attribute = (new ReflectionClass($model))->getMethod(Str::camel($name))->invoke($model);
+
+        if (! is_a($attribute, ExtendedAttribute::class) || ! $attribute->hasSqlDefinition()) {
+            return null;
+        }
+
+        return $attribute;
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Structure\Entity;
 use App\Utils\DependencyTracker;
 use App\Utils\Environment;
 use App\Utils\FieldPath;
+use App\Utils\Path;
 use Illuminate\Support\Collection;
 
 class FieldExpression extends Expression
@@ -38,6 +39,13 @@ class FieldExpression extends Expression
             'type' => 'field',
             'value' => $this->path,
         ];
+    }
+
+    public function toSql(Entity $entity, Collection $fields): string
+    {
+        $ModelClass = $entity->getModelClass();
+
+        return (new Path(new $ModelClass(), null))->field($this->getDbPath($entity->id, $fields));
     }
 
     public function evaluate(Environment $environment): mixed

@@ -36,6 +36,12 @@ class CallExpression extends Expression
         ];
     }
 
+    public function toSql(Entity $entity, Collection $fields): string
+    {
+        // TODO: implement
+        throw new Exception('Now allowed for now');
+    }
+
     public function evaluate(Environment $environment): mixed
     {
         $function = $environment->findFunction($this->identifier);

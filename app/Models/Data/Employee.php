@@ -3,10 +3,13 @@
 namespace App\Models\Data;
 
 use App\Utils\PhpAttributes\Dependencies;
+use App\Utils\Sql\ExtendedAttribute;
+use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Sql\SqlFn;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\JoinClause;
 
 class Employee extends DataModel
 {
@@ -20,14 +23,28 @@ class Employee extends DataModel
         'job_code',
     ];
 
-    public function manager(): BelongsTo
+    public function manager(): ExtendedBelongsTo
     {
-        return $this->belongsTo(Employee::class, 'manager_id');
+        $relation = $this->extendedBelongsTo(Employee::class, 'manager_id');
+
+        return $relation->withLeftJoin(
+            ['manager_id', 'manager.id'],
+            function (JoinClause $join, string $employeeManagerId, string $managerId) {
+                $join->on($employeeManagerId, '=', $managerId);
+            }
+        );
     }
 
-    public function job(): BelongsTo
+    public function job(): ExtendedBelongsTo
     {
-        return $this->belongsTo(Job::class, 'job_code', 'code');
+        $relation = $this->extendedBelongsTo(Job::class, 'job_code', 'code');
+
+        return $relation->withLeftJoin(
+            ['job_code', 'job.code'],
+            function (JoinClause $join, string $employeeJobCode, string $jobCode) {
+                $join->on($employeeJobCode, '=', $jobCode);
+            }
+        );
     }
 
     public function subordinates(): HasMany
@@ -54,9 +71,10 @@ class Employee extends DataModel
     #[Dependencies('salary')]
     protected function doubleSalary(): Attribute
     {
-        return Attribute::make(
+        return ExtendedAttribute::make(
             get: fn (mixed $value) => $this->salary * 2
-        );
+        )
+            ->withSql(['salary'], fn ($salary) => "$salary * 2");
     }
 
     #[Dependencies('bonus')]
@@ -68,8 +86,26 @@ class Employee extends DataModel
     #[Dependencies('name', 'job.title', 'job.code')]
     protected function nameWithJob(): Attribute
     {
-        return Attribute::make(
+        return ExtendedAttribute::make(
             get: fn () => "$this->name ({$this->job->code}: {$this->job->title})"
-        );
+        )
+            ->withSql(
+                ['name', 'job.title', 'job.code'],
+                function ($name, $jobTitle, $jobCode) {
+                    return SqlFn::CONCAT($name, $jobTitle, $jobCode);
+                });
+    }
+
+    #[Dependencies('name', 'job.display_name')]
+    protected function nameWithJobDisplayName(): Attribute
+    {
+        return ExtendedAttribute::make(
+            get: fn () => "$this->name ({$this->job->display_name})"
+        )
+            ->withSql(
+                ['name', 'job.display_name'],
+                function (string $name, string $jobDisplayName) {
+                    return SqlFn::CONCAT($name, "'('", $jobDisplayName, "')'");
+                });
     }
 }

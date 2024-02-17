@@ -15,6 +15,7 @@ class ColumnFactory extends Factory
         return [
             'name' => fake()->word,
             'expression' => fake()->word.'.'.fake()->word,
+            'position' => 0,
         ];
     }
 }

@@ -37,6 +37,11 @@ class BinaryExpression extends Expression
         ];
     }
 
+    public function toSql(Entity $entity, Collection $fields): string
+    {
+        return "{$this->left->toSql($entity, $fields)} $this->operator {$this->right->toSql($entity, $fields)}";
+    }
+
     public function evaluate(Environment $environment): mixed
     {
 

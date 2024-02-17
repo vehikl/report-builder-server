@@ -15,6 +15,8 @@ abstract class Expression
 
     abstract public function toArray(): array;
 
+    abstract public function toSql(Entity $entity, Collection $fields): string;
+
     public static function make(array $node): Expression
     {
         return match ($node['type']) {
