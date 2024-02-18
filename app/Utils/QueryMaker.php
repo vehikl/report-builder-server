@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
@@ -27,7 +28,7 @@ class QueryMaker
             /** @var ExtendedAttribute $attribute */
             $attribute = self::getSqlAttribute($model, $attributeName);
 
-            $dependencies = array_map(fn (string $value) => $path($value), $attribute->getSqlDependencies());
+            $dependencies = array_map(fn (string $value) => new SqlName($path($value)), $attribute->getSqlDependencies());
 
             return DB::raw("{$attribute->toSql(...$dependencies)} as {$path($attributeName)}");
         }, $attributes);
@@ -48,7 +49,7 @@ class QueryMaker
             $rightQuery = self::make($relation->getRelated(), $fields, $newPath);
 
             $outerQuery->leftJoinSub($rightQuery, $path->relation($relationKey), function (JoinClause $join) use ($path, $relation) {
-                $dependencies = array_map(fn (string $dependency) => $path($dependency), $relation->getLeftJoinDependencies());
+                $dependencies = array_map(fn (string $dependency) => new SqlName($path($dependency)), $relation->getLeftJoinDependencies());
                 $relation->applyLeftJoin($join, ...$dependencies);
             });
         }

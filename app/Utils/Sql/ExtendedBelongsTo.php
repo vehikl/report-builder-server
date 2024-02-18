@@ -32,7 +32,7 @@ class ExtendedBelongsTo extends BelongsTo implements LeftJoinable
         return $this->leftJoinDependencies;
     }
 
-    public function applyLeftJoin(JoinClause $join, string ...$dependencies): void
+    public function applyLeftJoin(JoinClause $join, SqlName ...$dependencies): void
     {
         $leftJoinExtension = $this->leftJoinDefinition;
 

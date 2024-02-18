@@ -15,7 +15,7 @@ class ExtendedAttribute extends Attribute
 
     /**
      * @param  string[]  $dependencies
-     * @param  callable(string ...$dependencies): string  $definition
+     * @param  callable(SqlName ...$dependencies): string  $definition
      */
     public function withSql(array $dependencies, callable $definition): static
     {
@@ -36,7 +36,7 @@ class ExtendedAttribute extends Attribute
         return $this->sqlDependencies;
     }
 
-    public function toSql(string ...$dependencies): string
+    public function toSql(SqlName ...$dependencies): string
     {
         $factory = $this->sqlDefinition;
 

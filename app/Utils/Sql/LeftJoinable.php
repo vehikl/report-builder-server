@@ -17,5 +17,5 @@ interface LeftJoinable
     /** @return string[] */
     public function getLeftJoinDependencies(): array;
 
-    public function applyLeftJoin(JoinClause $join, string ...$dependencies): void;
+    public function applyLeftJoin(JoinClause $join, SqlName ...$dependencies): void;
 }
