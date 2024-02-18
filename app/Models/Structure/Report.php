@@ -71,7 +71,7 @@ class Report extends Model
             ->map(fn (Column $column) => DB::raw($column->getSelect()))
             ->toArray();
 
-        return $query->select($selects);
+        return DB::query()->from($query, $this->name)->select($selects);
     }
 
     public function preview(): array
