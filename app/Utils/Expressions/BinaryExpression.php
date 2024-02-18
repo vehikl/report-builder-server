@@ -18,7 +18,6 @@ class BinaryExpression extends Expression
         }
     }
 
-
     /** @return string[] */
     public function getFieldPaths(): array
     {

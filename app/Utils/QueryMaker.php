@@ -56,7 +56,7 @@ class QueryMaker
         return $outerQuery;
     }
 
-    private static function getSqlAttribute(Model $model, $name): ?ExtendedAttribute
+    private static function getSqlAttribute(Model $model, string $name): ?ExtendedAttribute
     {
         if (! $model->hasAttributeMutator($name)) {
             return null;

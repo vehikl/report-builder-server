@@ -11,7 +11,6 @@ class StringExpression extends Expression
     {
     }
 
-
     /** @return string[] */
     public function getFieldPaths(): array
     {

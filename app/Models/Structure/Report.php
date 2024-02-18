@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class Report extends Model
@@ -85,7 +84,7 @@ class Report extends Model
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getQuery()->take(20)->get(),
+            'records' => $this->getQuery()->get(),
         ];
     }
 }

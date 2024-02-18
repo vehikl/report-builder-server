@@ -3,24 +3,12 @@
 namespace App\Utils\Expressions;
 
 use App\Models\Structure\Entity;
-use App\Utils\DependencyTracker;
 use App\Utils\FieldPath;
 use App\Utils\Path;
 use Illuminate\Support\Collection;
 
 class FieldExpression extends Expression
 {
-    private ?string $dbPath = null;
-
-    private function getDbPath(int $entityId, Collection $fields): string
-    {
-        if ($this->dbPath === null) {
-            $this->dbPath = (new FieldPath($entityId, $this->path))->toDbPath($fields);
-        }
-
-        return $this->dbPath;
-    }
-
     public function __construct(public readonly string $path)
     {
     }
@@ -43,6 +31,8 @@ class FieldExpression extends Expression
     {
         $ModelClass = $entity->getModelClass();
 
-        return (new Path(new $ModelClass(), null))->field($this->getDbPath($entity->id, $fields));
+        $dbPath = (new FieldPath($entity->id, $this->path))->toDbPath($fields);
+
+        return (new Path(new $ModelClass(), null))->field($dbPath);
     }
 }

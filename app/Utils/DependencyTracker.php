@@ -3,7 +3,7 @@
 namespace App\Utils;
 
 use App\Utils\Sql\ExtendedAttribute;
-use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Sql\LeftJoinable;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -49,15 +49,10 @@ class DependencyTracker
     {
         $currentKey = $pathKeys[0];
 
-        if (! $model->isRelation($currentKey)) {
-            throw new Exception("The key $currentKey is not a relation in ".$model::class);
-        }
+        $relation = self::getLeftJoinedRelation($model, $currentKey);
 
-        /** @var Relation $relation */
-        $relation = $model->$currentKey();
-
-        if (! is_a($relation, ExtendedBelongsTo::class) || ! $relation->hasLeftJoinDefinition()) {
-            throw new Exception("The relation $currentKey does not have a left join definition in ".$model::class);
+        if (!$relation) {
+            throw new Exception("The key $currentKey is not a relation with a left join definition in ".$model::class);
         }
 
         $relationDependencies = $relation->getLeftJoinDependencies();
@@ -109,4 +104,20 @@ class DependencyTracker
 
         return $attribute;
     }
+    public static function getLeftJoinedRelation(Model $model, $key): ?LeftJoinable
+    {
+        if (! $model->isRelation($key)) {
+            return null;
+        }
+
+        /** @var Relation $relation */
+        $relation = $model->$key();
+
+        if (! is_a($relation, LeftJoinable::class) || ! $relation->hasLeftJoinDefinition()) {
+            return null;
+        }
+
+        return $relation;
+    }
+
 }
