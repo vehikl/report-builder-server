@@ -27,14 +27,14 @@ class Path
         $keys = explode('.', $name);
 
         $currentModel = $this->model;
-        $previousKeys = [];
+
+        $normalizedName = implode('__', $keys);
 
         foreach ($keys as $i => $key) {
             if ($i === count($keys) - 1) {
                 $columns = Schema::getColumnListing($currentModel->getTable());
 
                 if (in_array($key, $columns)) {
-                    $normalizedName = implode('__', $keys);
 
                     return $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
                 }
@@ -42,16 +42,7 @@ class Path
                 $sqlAttribute = $this->getSqlAttribute($currentModel, $key);
 
                 if ($sqlAttribute) {
-                    $normalizedPreviousKeys = $previousKeys ? implode('__', $previousKeys) : null;
-
-                    $path = new Path(
-                        $currentModel,
-                        $this->basePath === null ? $normalizedPreviousKeys : "{$this->basePath}__$normalizedPreviousKeys"
-                    );
-
-                    $dependencies = array_map(fn (string $value) => $path($value), $sqlAttribute->getSqlDependencies());
-
-                    return $sqlAttribute->toSql(...$dependencies);
+                    return $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
                 }
 
                 throw new Exception("The key $key is not a column or SQL attribute in ".get_class($currentModel));
@@ -65,7 +56,6 @@ class Path
             $relation = $currentModel->$key();
 
             $currentModel = $relation->getRelated();
-            $previousKeys[] = $key;
         }
 
         throw new Exception('Something went wrong');

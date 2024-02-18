@@ -26,7 +26,7 @@ class FieldExpression extends Expression
     {
     }
 
-    public function getDbPaths(Entity $entity, Collection $fields): array
+    public function getDependencies(Entity $entity, Collection $fields): array
     {
         $ModelClass = $entity->getModelClass();
 

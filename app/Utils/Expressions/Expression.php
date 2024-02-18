@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 
 abstract class Expression
 {
-    abstract public function getDbPaths(Entity $entity, Collection $fields): array;
+    abstract public function getDependencies(Entity $entity, Collection $fields): array;
 
     abstract public function evaluate(Environment $environment): mixed;
 

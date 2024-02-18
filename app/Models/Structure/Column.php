@@ -30,7 +30,7 @@ class Column extends Model
         // TODO: cache this or receive as argument
         $fields = Field::query()->get();
 
-        return $this->expression->getDbPaths($this->report->entity, $fields);
+        return $this->expression->getDependencies($this->report->entity, $fields);
     }
 
     /** @return string[] */

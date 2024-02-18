@@ -36,7 +36,8 @@ class DependencyTracker
 
         if ($attribute) {
             return array_merge(
-                ...array_map(fn (string $path) => self::getDependencies($model, $path), $attribute->getSqlDependencies())
+                [$currentKey],
+                ...array_map(fn (string $path) => self::getDependencies($model, $path), $attribute->getSqlDependencies()),
             );
         }
 

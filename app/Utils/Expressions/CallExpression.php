@@ -19,10 +19,10 @@ class CallExpression extends Expression
         $this->args = $args;
     }
 
-    public function getDbPaths(Entity $entity, Collection $fields): array
+    public function getDependencies(Entity $entity, Collection $fields): array
     {
         return array_merge(...array_map(
-            fn (Expression $expression) => $expression->getDbPaths($entity, $fields),
+            fn (Expression $expression) => $expression->getDependencies($entity, $fields),
             $this->args
         ));
     }
