@@ -3,7 +3,6 @@
 namespace App\Utils\Expressions;
 
 use App\Models\Structure\Entity;
-use App\Utils\Environment;
 use Illuminate\Support\Collection;
 
 class StringExpression extends Expression
@@ -28,10 +27,5 @@ class StringExpression extends Expression
     public function toSql(Entity $entity, Collection $fields): string
     {
         return "'$this->value'";
-    }
-
-    public function evaluate(Environment $environment): string
-    {
-        return $this->value;
     }
 }

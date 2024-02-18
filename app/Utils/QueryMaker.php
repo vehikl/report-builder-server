@@ -19,7 +19,7 @@ class QueryMaker
         $tableName = $model->getTable();
 
         $columns = array_filter($fields, fn (string|array $value) => is_string($value) && in_array($value, Schema::getColumnListing($tableName)));
-        $attributes = array_filter($fields, fn (string|array $value) => is_string($value) && !in_array($value, Schema::getColumnListing($tableName)));
+        $attributes = array_filter($fields, fn (string|array $value) => is_string($value) && ! in_array($value, Schema::getColumnListing($tableName)));
         $relations = array_filter($fields, fn (string|array $value) => is_array($value));
 
         $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $columns);

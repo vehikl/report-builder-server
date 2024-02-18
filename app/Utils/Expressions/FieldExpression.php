@@ -4,7 +4,6 @@ namespace App\Utils\Expressions;
 
 use App\Models\Structure\Entity;
 use App\Utils\DependencyTracker;
-use App\Utils\Environment;
 use App\Utils\FieldPath;
 use App\Utils\Path;
 use Illuminate\Support\Collection;
@@ -46,28 +45,5 @@ class FieldExpression extends Expression
         $ModelClass = $entity->getModelClass();
 
         return (new Path(new $ModelClass(), null))->field($this->getDbPath($entity->id, $fields));
-    }
-
-    public function evaluate(Environment $environment): mixed
-    {
-        return self::getValueByPath($environment->model, $this->getDbPath($environment->entityId, $environment->fields));
-    }
-
-    private static function getValueByPath(mixed $data, string $path): mixed
-    {
-        $keys = explode('.', $path);
-        $current = $data;
-
-        foreach ($keys as $key) {
-            if (is_array($current) && array_key_exists($key, $current)) {
-                $current = $current[$key];
-            } elseif (is_object($current) && isset($current->$key)) {
-                $current = $current->$key;
-            } else {
-                return null;
-            }
-        }
-
-        return $current;
     }
 }

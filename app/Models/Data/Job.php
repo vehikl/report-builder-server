@@ -2,7 +2,6 @@
 
 namespace App\Models\Data;
 
-use App\Utils\PhpAttributes\Dependencies;
 use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\SqlFn;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -20,11 +19,10 @@ class Job extends DataModel
         return $this->hasMany(Employee::class, 'job_code', 'code');
     }
 
-    #[Dependencies('code', 'title')]
     protected function displayName(): Attribute
     {
         return ExtendedAttribute::make(
-            get: fn (mixed $value) => "$this->code $this->title"
+            get: fn () => "$this->code $this->title"
         )
             ->withSql(['code', 'title'], fn (string $code, $title) => SqlFn::CONCAT($code, $title));
     }

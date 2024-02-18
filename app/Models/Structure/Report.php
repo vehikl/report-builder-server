@@ -2,7 +2,6 @@
 
 namespace App\Models\Structure;
 
-use App\Utils\Environment;
 use App\Utils\Path;
 use App\Utils\QueryMaker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,14 +33,6 @@ class Report extends Model
         return $this->columns
             ->flatMap(fn (Column $column) => $column->dependencies())
             ->unique()
-            ->toArray();
-    }
-
-    public function relations(): array
-    {
-        return $this->columns
-            ->flatMap(fn (Column $column) => $column->relations())
-            ->filter()
             ->toArray();
     }
 
@@ -96,21 +87,5 @@ class Report extends Model
             ]),
             'records' => $this->getQuery()->get(),
         ];
-    }
-
-    public function getRecords(Collection $models, Collection $fields): array
-    {
-        return $models
-            ->map(fn (Model $model) => $this->getRecord(Environment::global($model, $this->entity_id, $fields)))
-            ->toArray();
-    }
-
-    public function getRecord(Environment $environment): array
-    {
-        return $this->columns
-            ->mapWithKeys(fn (Column $column) => [
-                $column->name => $column->expression->evaluate($environment),
-            ])
-            ->toArray();
     }
 }

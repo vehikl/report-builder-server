@@ -3,7 +3,6 @@
 namespace App\Utils\Expressions;
 
 use App\Models\Structure\Entity;
-use App\Utils\Environment;
 use Exception;
 use Illuminate\Support\Collection;
 
@@ -30,10 +29,5 @@ class IdentifierExpression extends Expression
     {
         // TODO: implement
         throw new Exception('Now allowed for now');
-    }
-
-    public function evaluate(Environment $environment): mixed
-    {
-        return $environment->findValue($this->identifier);
     }
 }

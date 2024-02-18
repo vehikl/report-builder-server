@@ -2,7 +2,6 @@
 
 namespace App\Models\Data;
 
-use App\Utils\PhpAttributes\Dependencies;
 use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\ExtendedBelongsTo;
 use App\Utils\Sql\SqlFn;
@@ -52,38 +51,33 @@ class Employee extends DataModel
         return $this->hasMany(Employee::class, 'manager_id');
     }
 
-    #[Dependencies('salary', 'bonus')]
     protected function totalCompensation(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value) => $this->salary + $this->bonus
+            get: fn () => $this->salary + $this->bonus
         );
     }
 
-    #[Dependencies('job.title')]
     protected function jobTitle(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value) => $this->job->title
+            get: fn () => $this->job->title
         );
     }
 
-    #[Dependencies('salary')]
     protected function doubleSalary(): Attribute
     {
         return ExtendedAttribute::make(
-            get: fn (mixed $value) => $this->salary * 2
+            get: fn () => $this->salary * 2
         )
             ->withSql(['salary'], fn ($salary) => "$salary * 2");
     }
 
-    #[Dependencies('bonus')]
     protected function multiplyBonus(float $times): float
     {
         return $this->bonus * $times;
     }
 
-    #[Dependencies('name', 'job.title', 'job.code')]
     protected function nameWithJob(): Attribute
     {
         return ExtendedAttribute::make(
@@ -96,7 +90,6 @@ class Employee extends DataModel
                 });
     }
 
-    #[Dependencies('name', 'job.display_name')]
     protected function nameWithJobDisplayName(): Attribute
     {
         return ExtendedAttribute::make(

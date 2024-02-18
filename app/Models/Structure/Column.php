@@ -33,15 +33,6 @@ class Column extends Model
         return $this->expression->getDependencies($this->report->entity, $fields);
     }
 
-    /** @return string[] */
-    public function relations(): array
-    {
-        return array_map(
-            fn (string $path) => implode('.', array_slice(explode('.', $path), 0, -1)) ?: null,
-            $this->dependencies()
-        );
-    }
-
     protected function expression(): Attribute
     {
         return Attribute::make(

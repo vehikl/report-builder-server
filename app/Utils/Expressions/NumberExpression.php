@@ -3,7 +3,6 @@
 namespace App\Utils\Expressions;
 
 use App\Models\Structure\Entity;
-use App\Utils\Environment;
 use Exception;
 use Illuminate\Support\Collection;
 
@@ -32,10 +31,5 @@ class NumberExpression extends Expression
     public function toSql(Entity $entity, Collection $fields): string
     {
         return $this->value;
-    }
-
-    public function evaluate(Environment $environment): float
-    {
-        return floatval($this->value);
     }
 }
