@@ -11,7 +11,9 @@ class StringExpression extends Expression
     {
     }
 
-    public function getDependencies(Entity $entity, Collection $fields): array
+
+    /** @return string[] */
+    public function getFieldPaths(): array
     {
         return [];
     }

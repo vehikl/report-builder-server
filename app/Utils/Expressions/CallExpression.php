@@ -18,10 +18,11 @@ class CallExpression extends Expression
         $this->args = $args;
     }
 
-    public function getDependencies(Entity $entity, Collection $fields): array
+    /** @return string[] */
+    public function getFieldPaths(): array
     {
         return array_merge(...array_map(
-            fn (Expression $expression) => $expression->getDependencies($entity, $fields),
+            fn (Expression $expression) => $expression->getFieldPaths(),
             $this->args
         ));
     }

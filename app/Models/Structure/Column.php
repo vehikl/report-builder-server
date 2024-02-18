@@ -2,11 +2,14 @@
 
 namespace App\Models\Structure;
 
+use App\Utils\DependencyTracker;
 use App\Utils\Expressions\Expression;
+use App\Utils\FieldPath;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /** @property Expression $expression */
@@ -30,7 +33,17 @@ class Column extends Model
         // TODO: cache this or receive as argument
         $fields = Field::query()->get();
 
-        return $this->expression->getDependencies($this->report->entity, $fields);
+        $fieldPaths = $this->expression->getFieldPaths();
+
+        return array_merge(...array_map(
+            function (string $path) use ($fields) {
+                $Model = $this->report->entity->getModelClass();
+                $dbPath = (new FieldPath($this->report->entity->id, $path))->toDbPath($fields);
+
+                return DependencyTracker::getDependencies(new $Model(), $dbPath);
+            },
+            $fieldPaths
+        ));
     }
 
     protected function expression(): Attribute

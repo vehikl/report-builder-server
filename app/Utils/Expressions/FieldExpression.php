@@ -25,11 +25,10 @@ class FieldExpression extends Expression
     {
     }
 
-    public function getDependencies(Entity $entity, Collection $fields): array
+    /** @return string[] */
+    public function getFieldPaths(): array
     {
-        $ModelClass = $entity->getModelClass();
-
-        return DependencyTracker::getDependencies(new $ModelClass(), $this->getDbPath($entity->id, $fields));
+        return [$this->path];
     }
 
     public function toArray(): array

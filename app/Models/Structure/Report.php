@@ -85,7 +85,7 @@ class Report extends Model
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getQuery()->get(),
+            'records' => $this->getQuery()->take(20)->get(),
         ];
     }
 }

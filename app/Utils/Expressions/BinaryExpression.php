@@ -18,11 +18,13 @@ class BinaryExpression extends Expression
         }
     }
 
-    public function getDependencies(Entity $entity, Collection $fields): array
+
+    /** @return string[] */
+    public function getFieldPaths(): array
     {
         return [
-            ...$this->left->getDependencies($entity, $fields),
-            ...$this->right->getDependencies($entity, $fields),
+            ...$this->left->getFieldPaths(),
+            ...$this->right->getFieldPaths(),
         ];
     }
 

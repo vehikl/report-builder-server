@@ -8,7 +8,8 @@ use Illuminate\Support\Collection;
 
 abstract class Expression
 {
-    abstract public function getDependencies(Entity $entity, Collection $fields): array;
+    /** @return string[] */
+    abstract public function getFieldPaths(): array;
 
     abstract public function toSql(Entity $entity, Collection $fields): string;
 
