@@ -18,5 +18,4 @@ interface LeftJoinable
     public function getLeftJoinDependencies(): array;
 
     public function applyLeftJoin(JoinClause $join, string ...$dependencies): void;
-
 }

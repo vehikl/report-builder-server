@@ -51,7 +51,7 @@ class DependencyTracker
 
         $relation = self::getLeftJoinedRelation($model, $currentKey);
 
-        if (!$relation) {
+        if (! $relation) {
             throw new Exception("The key $currentKey is not a relation with a left join definition in ".$model::class);
         }
 
@@ -104,6 +104,7 @@ class DependencyTracker
 
         return $attribute;
     }
+
     public static function getLeftJoinedRelation(Model $model, $key): ?LeftJoinable
     {
         if (! $model->isRelation($key)) {
@@ -119,5 +120,4 @@ class DependencyTracker
 
         return $relation;
     }
-
 }
