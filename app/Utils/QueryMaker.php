@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Utils\Dependency\DependencyTree;
 use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\ExtendedBelongsTo;
 use App\Utils\Sql\SqlName;
@@ -13,33 +14,30 @@ use Illuminate\Support\Facades\DB;
 
 class QueryMaker
 {
-    public static function make(Model $model, array $fields, Path $path): Builder
+    public static function make(DependencyTree $tree, Path $path): Builder
     {
-        $tableName = $model->getTable();
+        $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $tree->columns);
 
-        $relations = $fields['relations'];
+        $attributeSelects = Arr::map($tree->attributes, function (ExtendedAttribute $attribute, string $attributeName) use ($path) {
+            $dependencies = array_map(fn (string $value) => new SqlName($path($value)), $attribute->getSqlDependencies()); // TODO: $deps = $path->fields($attribute->getDependencies)
 
-        $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $fields['columns']);
-
-        $attributeSelects = Arr::map($fields['attributes'], function (ExtendedAttribute $attribute, string $attributeName) use ($model, $path) {
-            $dependencies = array_map(fn (string $value) => new SqlName($path($value)), $attribute->getSqlDependencies());
             return DB::raw("{$attribute->toSql(...$dependencies)} as {$path($attributeName)}");
         });
 
-        $leftQuery = DB::table($tableName)->select($columnSelects);
+        $leftQuery = DB::table($tree->model->getTable())
+            ->select($columnSelects);
 
-        if (empty($relations) && empty($attributeSelects)) {
+        if (empty($tree->relations) && empty($attributeSelects)) {
             return $leftQuery;
         }
 
         $outerQuery = DB::query()->from($leftQuery, '_root_')->select(['*', ...$attributeSelects]);
 
-        foreach ($relations as $relationKey => $fields) {
-            /** @var ExtendedBelongsTo $relation */
-            $relation = $fields['relation'];
+        foreach ($tree->relations as $relationKey => $dependencyRelation) {
+            $relation = $dependencyRelation->relation;
 
             $newPath = $path->append($relationKey);
-            $rightQuery = self::make($relation->getRelated(), $fields, $newPath);
+            $rightQuery = self::make($dependencyRelation->tree, $newPath);
 
             $outerQuery->leftJoinSub($rightQuery, $path->relation($relationKey), function (JoinClause $join) use ($path, $relation) {
                 $dependencies = array_map(fn (string $dependency) => new SqlName($path($dependency)), $relation->getLeftJoinDependencies());

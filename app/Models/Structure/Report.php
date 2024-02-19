@@ -2,6 +2,8 @@
 
 namespace App\Models\Structure;
 
+use App\Utils\Dependency\DependencyRelation;
+use App\Utils\Dependency\DependencyTree;
 use App\Utils\DependencyTracker;
 use App\Utils\Path;
 use App\Utils\QueryMaker;
@@ -37,48 +39,35 @@ class Report extends Model
             ->toArray();
     }
 
-    public function getQueryStructure(): array
+    public function getDependencyTree(): DependencyTree
     {
-        $structure = [
-            'relation' => null,
-            'columns' => [],
-            'attributes' => [],
-            'relations' => [],
-        ];
+        $tree = new DependencyTree($this->entity->getModel());
 
         foreach ($this->dependencies() as $path) {
             $keys = explode('.', $path);
-            $currentStructure = &$structure;
-            $currentModel = $this->entity->getModel();
+            $currentTree = $tree;
 
             foreach ($keys as $i => $key) {
                 if ($i === array_key_last($keys)) {
-                    if (DependencyTracker::isColumn($currentModel, $key)) {
-                        $currentStructure['columns'][] = $key;
-
+                    if (DependencyTracker::isColumn($currentTree->model, $key)) {
+                        $currentTree->columns[] = $key;
                         continue;
                     }
 
-                    $currentStructure['attributes'][$key] = DependencyTracker::getSqlAttribute($currentModel, $key);
+                    $currentTree->attributes[$key] = DependencyTracker::getSqlAttribute($currentTree->model, $key);
 
                     continue;
                 }
 
-                if (! isset($currentStructure['relations'][$key])) {
-                    $currentStructure['relations'][$key] = [
-                        'relation' => $currentModel->$key(),
-                        'columns' => [],
-                        'attributes' => [],
-                        'relations' => [],
-                    ];
+                if (! array_key_exists($key, $currentTree->relations)) {
+                    $currentTree->relations[$key] = new DependencyRelation($currentTree->model->$key());
                 }
 
-                $currentStructure = &$currentStructure['relations'][$key];
-                $currentModel = $currentStructure['relation']->getRelated();
+                $currentTree = $currentTree->relations[$key]->tree;
             }
         }
 
-        return $structure;
+        return $tree;
 
     }
 
@@ -86,7 +75,7 @@ class Report extends Model
     {
         $model = new ($this->entity->getModelClass());
 
-        $query = QueryMaker::make($model, $this->getQueryStructure(), new Path($model, null));
+        $query = QueryMaker::make($this->getDependencyTree(), new Path($model, null));
 
         $selects = $this->columns
             ->map(fn (Column $column) => DB::raw($column->getSelect()))

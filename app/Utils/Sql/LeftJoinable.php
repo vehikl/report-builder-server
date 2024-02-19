@@ -2,6 +2,7 @@
 
 namespace App\Utils\Sql;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\JoinClause;
 
 interface LeftJoinable
@@ -18,4 +19,7 @@ interface LeftJoinable
     public function getLeftJoinDependencies(): array;
 
     public function applyLeftJoin(JoinClause $join, SqlName ...$dependencies): void;
+
+    /** @return Model */
+    public function getRelated();
 }
