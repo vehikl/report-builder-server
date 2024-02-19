@@ -85,12 +85,12 @@ class DependencyTracker
         );
     }
 
-    private static function isColumn(Model $model, string $key): bool
+    public static function isColumn(Model $model, string $key): bool
     {
         return in_array($key, Schema::getColumnListing($model->getTable()));
     }
 
-    private static function getSqlAttribute(Model $model, $name): ?ExtendedAttribute
+    public static function getSqlAttribute(Model $model, $name): ?ExtendedAttribute
     {
         if (! $model->hasAttributeMutator($name)) {
             return null;

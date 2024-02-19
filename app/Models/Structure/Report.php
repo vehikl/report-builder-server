@@ -2,6 +2,7 @@
 
 namespace App\Models\Structure;
 
+use App\Utils\DependencyTracker;
 use App\Utils\Path;
 use App\Utils\QueryMaker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
+/** @property Entity $entity */
 class Report extends Model
 {
     use HasFactory;
@@ -37,23 +39,42 @@ class Report extends Model
 
     public function getQueryStructure(): array
     {
-        $structure = [];
+        $structure = [
+            'relation' => null,
+            'columns' => [],
+            'attributes' => [],
+            'relations' => [],
+        ];
 
         foreach ($this->dependencies() as $path) {
             $keys = explode('.', $path);
-            $substructure = &$structure;
+            $currentStructure = &$structure;
+            $currentModel = $this->entity->getModel();
 
             foreach ($keys as $i => $key) {
                 if ($i === array_key_last($keys)) {
-                    $substructure[] = $key;
+                    if (DependencyTracker::isColumn($currentModel, $key)) {
+                        $currentStructure['columns'][] = $key;
+
+                        continue;
+                    }
+
+                    $currentStructure['attributes'][$key] = DependencyTracker::getSqlAttribute($currentModel, $key);
 
                     continue;
                 }
 
-                if (! isset($substructure[$key])) {
-                    $substructure[$key] = [];
+                if (! isset($currentStructure['relations'][$key])) {
+                    $currentStructure['relations'][$key] = [
+                        'relation' => $currentModel->$key(),
+                        'columns' => [],
+                        'attributes' => [],
+                        'relations' => [],
+                    ];
                 }
-                $substructure = &$substructure[$key];
+
+                $currentStructure = &$currentStructure['relations'][$key];
+                $currentModel = $currentStructure['relation']->getRelated();
             }
         }
 

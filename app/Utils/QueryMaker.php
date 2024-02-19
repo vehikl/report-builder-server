@@ -8,10 +8,8 @@ use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use ReflectionClass;
 
 class QueryMaker
 {
@@ -19,19 +17,14 @@ class QueryMaker
     {
         $tableName = $model->getTable();
 
-        $columns = array_filter($fields, fn (string|array $value) => is_string($value) && in_array($value, Schema::getColumnListing($tableName)));
-        $attributes = array_filter($fields, fn (string|array $value) => is_string($value) && ! in_array($value, Schema::getColumnListing($tableName)));
-        $relations = array_filter($fields, fn (string|array $value) => is_array($value));
+        $relations = $fields['relations'];
 
-        $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $columns);
-        $attributeSelects = array_map(function (string $attributeName) use ($model, $path) {
-            /** @var ExtendedAttribute $attribute */
-            $attribute = self::getSqlAttribute($model, $attributeName);
+        $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $fields['columns']);
 
+        $attributeSelects = Arr::map($fields['attributes'], function (ExtendedAttribute $attribute, string $attributeName) use ($model, $path) {
             $dependencies = array_map(fn (string $value) => new SqlName($path($value)), $attribute->getSqlDependencies());
-
             return DB::raw("{$attribute->toSql(...$dependencies)} as {$path($attributeName)}");
-        }, $attributes);
+        });
 
         $leftQuery = DB::table($tableName)->select($columnSelects);
 
@@ -43,7 +36,7 @@ class QueryMaker
 
         foreach ($relations as $relationKey => $fields) {
             /** @var ExtendedBelongsTo $relation */
-            $relation = $model->$relationKey();
+            $relation = $fields['relation'];
 
             $newPath = $path->append($relationKey);
             $rightQuery = self::make($relation->getRelated(), $fields, $newPath);
@@ -55,20 +48,5 @@ class QueryMaker
         }
 
         return $outerQuery;
-    }
-
-    private static function getSqlAttribute(Model $model, string $name): ?ExtendedAttribute
-    {
-        if (! $model->hasAttributeMutator($name)) {
-            return null;
-        }
-
-        $attribute = (new ReflectionClass($model))->getMethod(Str::camel($name))->invoke($model);
-
-        if (! is_a($attribute, ExtendedAttribute::class) || ! $attribute->hasSqlDefinition()) {
-            return null;
-        }
-
-        return $attribute;
     }
 }

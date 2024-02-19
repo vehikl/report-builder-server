@@ -22,4 +22,9 @@ class Entity extends Model
     {
         return config('models')[$this->getAttribute('table')];
     }
+
+    public function getModel(): Model
+    {
+        return new ($this->getModelClass());
+    }
 }
