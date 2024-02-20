@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Models\Data\DataModel;
 use App\Utils\Sql\ExtendedBelongsTo;
 use App\Utils\Sql\SqlName;
 use Exception;
@@ -30,8 +31,8 @@ class Path
         foreach ($keys as $i => $key) {
             if ($i === count($keys) - 1) {
                 if (
-                    DependencyTracker::isColumn($currentModel, $key) ||
-                    DependencyTracker::isSqlAttribute($currentModel, $key)
+                    DataModel::isColumn($currentModel, $key) ||
+                    DataModel::isSqlAttribute($currentModel, $key)
                 ) {
                     $resolvedPath = $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
 

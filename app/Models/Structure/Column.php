@@ -2,9 +2,7 @@
 
 namespace App\Models\Structure;
 
-use App\Utils\DependencyTracker;
 use App\Utils\Expressions\Expression;
-use App\Utils\FieldPath;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,25 +22,6 @@ class Column extends Model
     public function report(): BelongsTo
     {
         return $this->belongsTo(Report::class);
-    }
-
-    /** @return string[] */
-    public function dependencies(): array
-    {
-        // TODO: cache this or receive as argument
-        $fields = Field::query()->get();
-
-        $fieldPaths = $this->expression->getFieldPaths();
-
-        return array_merge(...array_map(
-            function (string $path) use ($fields) {
-                $Model = $this->report->entity->getModelClass();
-                $dbPath = (new FieldPath($this->report->entity->id, $path))->toDbPath($fields);
-
-                return DependencyTracker::getDependencies(new $Model(), $dbPath);
-            },
-            $fieldPaths
-        ));
     }
 
     protected function expression(): Attribute
