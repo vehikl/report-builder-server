@@ -42,12 +42,9 @@ class Path
                 throw new Exception("The key $key is not a column or SQL attribute in ".get_class($currentModel));
             }
 
-            if (! $this->model->isRelation($key)) {
+            if (!$relation = DataModel::getLeftJoinedRelation($currentModel, $key)) {
                 throw new Exception('Not a relation.');
             }
-
-            /** @var Relation $relation */
-            $relation = $currentModel->$key();
 
             $currentModel = $relation->getRelated();
         }
@@ -66,7 +63,7 @@ class Path
 
     public function relation(string $key): string
     {
-        if (! $this->model->isRelation($key)) {
+        if (! DataModel::isLeftJoinedRelation($this->model, $key)) {
             throw new Exception('Not a relation.');
         }
 
@@ -75,9 +72,9 @@ class Path
 
     public function append(string $key): static
     {
-        // TODO: if is relation and Extended... and hasLeftJoinDefinition
-        /** @var ExtendedBelongsTo $relation */
-        $relation = $this->model->$key();
+        if (!$relation = DataModel::getLeftJoinedRelation($this->model, $key)) {
+            throw new Exception('Not a relation.');
+        }
 
         $appendedBasePath = $this->basePath === null ? $key : "{$this->basePath}__$key";
 

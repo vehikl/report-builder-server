@@ -55,4 +55,9 @@ class DataModel extends Model
 
         return $relation;
     }
+
+    public static function isLeftJoinedRelation(Model $model, $name): bool
+    {
+        return boolval(self::getLeftJoinedRelation($model, $name));
+    }
 }

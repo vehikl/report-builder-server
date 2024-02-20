@@ -10,7 +10,6 @@ class FieldPath
     {
     }
 
-    // TODO: pass entityId here instead of the constructor
     public function toDataPath(Collection $fields): string
     {
 
