@@ -16,7 +16,7 @@ class QueryMaker
         $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $tree->columns);
 
         $attributeSelects = Arr::map($tree->attributes, function (ExtendedAttribute $attribute, string $attributeName) use ($path) {
-            $dependencies = $path->fields($attribute->getSqlDependencies());
+            $dependencies = $path->fields($attribute->getDependencies());
 
             return DB::raw("{$attribute->toSql(...$dependencies)} as {$path($attributeName)}");
         });
@@ -37,7 +37,7 @@ class QueryMaker
             $rightQuery = self::make($dependencyRelation->tree, $newPath);
 
             $outerQuery->leftJoinSub($rightQuery, $path->relation($relationKey), function (JoinClause $join) use ($path, $relation) {
-                $relation->applyLeftJoin($join, ...$path->fields($relation->getLeftJoinDependencies()));
+                $relation->applyLeftJoin($join, ...$path->fields($relation->getDependencies()));
             });
         }
 

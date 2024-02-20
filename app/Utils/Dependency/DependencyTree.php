@@ -65,7 +65,7 @@ class DependencyTree
                     if ($attribute = DataModel::getSqlAttribute($currentTree->model, $key)) {
                         $currentTree->attributes[$key] = $attribute;
 
-                        $currentTree->merge($currentTree->model, $attribute->getSqlDependencies());
+                        $currentTree->merge($currentTree->model, $attribute->getDependencies());
 
                         continue;
                     }
@@ -80,7 +80,7 @@ class DependencyTree
 
                     $relationTree = $currentTree->relations[$key]->tree;
 
-                    [$currentDependencies, $relationDependencies] = Collection::make($relation->getLeftJoinDependencies())
+                    [$currentDependencies, $relationDependencies] = Collection::make($relation->getDependencies())
                         ->groupBy(fn (string $value) => explode('.', $value)[0] === $key)
                         ->toArray();
 

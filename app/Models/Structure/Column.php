@@ -83,9 +83,9 @@ class Column extends Model
         ];
     }
 
-    /** @param  array<string, string>  $fieldsSqlNames */
-    public function getSelect(array $fieldsSqlNames): string
+    /** @param  array<string, string>  $sqlNames */
+    public function getSelect(array $sqlNames): string
     {
-        return "{$this->expression->toSql($fieldsSqlNames)} as $this->key";
+        return "{$this->expression->toSql($sqlNames)} as $this->key";
     }
 }

@@ -16,7 +16,7 @@ interface LeftJoinable
     public function hasLeftJoinDefinition(): bool;
 
     /** @return string[] */
-    public function getLeftJoinDependencies(): array;
+    public function getDependencies(): array;
 
     public function applyLeftJoin(JoinClause $join, SqlName ...$dependencies): void;
 

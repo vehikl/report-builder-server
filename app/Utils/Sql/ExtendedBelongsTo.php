@@ -10,13 +10,13 @@ use Illuminate\Database\Query\JoinClause;
 class ExtendedBelongsTo extends BelongsTo implements LeftJoinable
 {
     /** @var string[] */
-    protected array $leftJoinDependencies = [];
+    protected array $dependencies = [];
 
     protected ?Closure $leftJoinDefinition = null;
 
     public function withLeftJoin(array $dependencies, callable $definition): static
     {
-        $this->leftJoinDependencies = $dependencies;
+        $this->dependencies = $dependencies;
         $this->leftJoinDefinition = $definition(...);
 
         return $this;
@@ -27,9 +27,9 @@ class ExtendedBelongsTo extends BelongsTo implements LeftJoinable
         return $this->leftJoinDefinition !== null;
     }
 
-    public function getLeftJoinDependencies(): array
+    public function getDependencies(): array
     {
-        return $this->leftJoinDependencies;
+        return $this->dependencies;
     }
 
     public function applyLeftJoin(JoinClause $join, SqlName ...$dependencies): void

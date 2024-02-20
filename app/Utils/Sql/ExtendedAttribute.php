@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class ExtendedAttribute extends Attribute
 {
     /** @var string[] */
-    protected array $sqlDependencies = [];
+    protected array $dependencies = [];
 
-    protected ?Closure $sqlDefinition = null;
+    protected ?Closure $definition = null;
 
     /**
      * @param  string[]  $dependencies
@@ -19,26 +19,26 @@ class ExtendedAttribute extends Attribute
      */
     public function withSql(array $dependencies, callable $definition): static
     {
-        $this->sqlDependencies = $dependencies;
-        $this->sqlDefinition = $definition;
+        $this->dependencies = $dependencies;
+        $this->definition = $definition;
 
         return $this;
     }
 
     public function hasSqlDefinition(): bool
     {
-        return $this->sqlDefinition !== null;
+        return $this->definition !== null;
     }
 
     /** @return string[] */
-    public function getSqlDependencies(): array
+    public function getDependencies(): array
     {
-        return $this->sqlDependencies;
+        return $this->dependencies;
     }
 
     public function toSql(SqlName ...$dependencies): string
     {
-        $factory = $this->sqlDefinition;
+        $factory = $this->definition;
 
         if ($factory === null) {
             throw new Exception('The SQL definition is not set. Use `withSql`');
