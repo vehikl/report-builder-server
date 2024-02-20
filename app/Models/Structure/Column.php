@@ -65,11 +65,9 @@ class Column extends Model
         ];
     }
 
-    public function getSelect(): string
+    /** @param array<string, string> $fieldsSqlNames */
+    public function getSelect(array $fieldsSqlNames): string
     {
-        // TODO: cache this or receive as argument
-        $fields = Field::query()->get();
-
-        return "{$this->expression->toSql($this->report->entity, $fields)} as $this->key";
+        return "{$this->expression->toSql($fieldsSqlNames)} as $this->key";
     }
 }

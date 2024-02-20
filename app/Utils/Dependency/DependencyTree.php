@@ -33,9 +33,9 @@ class DependencyTree
 
         $tree = self::make($model, $paths);
 
-        $this->columns = array_unique(array_merge($this->columns, $tree->columns));
-        $this->attributes = array_unique(array_merge($this->attributes, $tree->attributes));
-        $this->relations = array_unique(array_merge($this->relations, $tree->relations));
+        $this->columns = array_unique(array_merge($this->columns, $tree->columns), SORT_REGULAR);
+        $this->attributes = array_unique(array_merge($this->attributes, $tree->attributes), SORT_REGULAR);
+        $this->relations = array_unique(array_merge($this->relations, $tree->relations), SORT_REGULAR);
 
         return $this;
     }

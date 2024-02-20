@@ -11,7 +11,8 @@ abstract class Expression
     /** @return string[] */
     abstract public function getFieldPaths(): array;
 
-    abstract public function toSql(Entity $entity, Collection $fields): string;
+    /** @param array<string, string> $fieldsSqlNames */
+    abstract public function toSql(array $fieldsSqlNames): string;
 
     abstract public function toArray(): array;
 

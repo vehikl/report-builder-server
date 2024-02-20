@@ -27,12 +27,8 @@ class FieldExpression extends Expression
         ];
     }
 
-    public function toSql(Entity $entity, Collection $fields): string
+    public function toSql(array $fieldsSqlNames): string
     {
-        $ModelClass = $entity->getModelClass();
-
-        $dbPath = (new FieldPath($entity->id, $this->path))->toDbPath($fields);
-
-        return (new Path(new $ModelClass(), null))->field($dbPath);
+        return $fieldsSqlNames[$this->path];
     }
 }

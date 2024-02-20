@@ -36,7 +36,7 @@ class CallExpression extends Expression
         ];
     }
 
-    public function toSql(Entity $entity, Collection $fields): string
+    public function toSql(array $fieldsSqlNames): string
     {
         // TODO: implement
         throw new Exception('Now allowed for now');

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /** @property Entity $entity */
@@ -30,7 +31,7 @@ class Report extends Model
         return $this->hasMany(Column::class);
     }
 
-    public function getFieldDbPaths(): array
+    public function getFieldsDbPaths(): array
     {
         $fields = Field::query()->get();
 
@@ -45,16 +46,28 @@ class Report extends Model
             ->toArray();
     }
 
+    public function getFieldsSqlNames(): array
+    {
+        return Collection::make($this->getFieldsDbPaths())
+            ->mapWithKeys(function (string $dbPath, string $fieldPath) {
+                $sqlName = (new Path($this->entity->getModel(), null))->field($dbPath);
+                return [$fieldPath => $sqlName];
+            })
+            ->toArray();
+    }
+
     public function getQuery(): Builder
     {
         $model = new ($this->entity->getModelClass());
 
-        $dependencyTree = DependencyTree::make($this->entity->getModel(), $this->getFieldDbPaths());
+        $dependencyTree = DependencyTree::make($this->entity->getModel(), $this->getFieldsDbPaths());
 
         $query = QueryMaker::make($dependencyTree, new Path($model, null));
 
+        $fieldsSqlNames = $this->getFieldsSqlNames();
+
         $selects = $this->columns
-            ->map(fn (Column $column) => DB::raw($column->getSelect()))
+            ->map(fn (Column $column) => DB::raw($column->getSelect($fieldsSqlNames)))
             ->toArray();
 
         return DB::query()->from($query, $this->name)->select($selects);

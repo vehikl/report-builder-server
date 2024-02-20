@@ -29,7 +29,7 @@ class NumberExpression extends Expression
         ];
     }
 
-    public function toSql(Entity $entity, Collection $fields): string
+    public function toSql(array $fieldsSqlNames): string
     {
         return $this->value;
     }

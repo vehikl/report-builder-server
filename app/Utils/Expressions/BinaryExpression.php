@@ -37,8 +37,8 @@ class BinaryExpression extends Expression
         ];
     }
 
-    public function toSql(Entity $entity, Collection $fields): string
+    public function toSql(array $fieldsSqlNames): string
     {
-        return "{$this->left->toSql($entity, $fields)} $this->operator {$this->right->toSql($entity, $fields)}";
+        return "{$this->left->toSql($fieldsSqlNames)} $this->operator {$this->right->toSql($fieldsSqlNames)}";
     }
 }
