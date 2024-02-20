@@ -2,11 +2,6 @@
 
 namespace App\Utils\Expressions;
 
-use App\Models\Structure\Entity;
-use App\Utils\FieldPath;
-use App\Utils\Path;
-use Illuminate\Support\Collection;
-
 class FieldExpression extends Expression
 {
     public function __construct(public readonly string $path)
@@ -27,8 +22,8 @@ class FieldExpression extends Expression
         ];
     }
 
-    public function toSql(array $fieldsSqlNames): string
+    public function toSql(array $sqlNames): string
     {
-        return $fieldsSqlNames[$this->path];
+        return $sqlNames[$this->path];
     }
 }

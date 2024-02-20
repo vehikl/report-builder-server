@@ -2,9 +2,7 @@
 
 namespace App\Utils\Expressions;
 
-use App\Models\Structure\Entity;
 use Exception;
-use Illuminate\Support\Collection;
 
 class BinaryExpression extends Expression
 {
@@ -37,8 +35,8 @@ class BinaryExpression extends Expression
         ];
     }
 
-    public function toSql(array $fieldsSqlNames): string
+    public function toSql(array $sqlNames): string
     {
-        return "{$this->left->toSql($fieldsSqlNames)} $this->operator {$this->right->toSql($fieldsSqlNames)}";
+        return "{$this->left->toSql($sqlNames)} $this->operator {$this->right->toSql($sqlNames)}";
     }
 }

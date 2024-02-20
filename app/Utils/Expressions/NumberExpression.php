@@ -2,9 +2,7 @@
 
 namespace App\Utils\Expressions;
 
-use App\Models\Structure\Entity;
 use Exception;
-use Illuminate\Support\Collection;
 
 class NumberExpression extends Expression
 {
@@ -29,7 +27,7 @@ class NumberExpression extends Expression
         ];
     }
 
-    public function toSql(array $fieldsSqlNames): string
+    public function toSql(array $sqlNames): string
     {
         return $this->value;
     }

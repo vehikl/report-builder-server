@@ -14,7 +14,10 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-/** @property Entity $entity */
+/**
+ * @property Entity $entity
+ * @property Collection<int, Column> $columns
+ */
 class Report extends Model
 {
     use HasFactory;
@@ -31,26 +34,23 @@ class Report extends Model
         return $this->hasMany(Column::class);
     }
 
-    public function getFieldsDbPaths(): array
+    /** @return array<string, string> */
+    public function getDataPaths(): array
     {
         $fields = Field::query()->get();
 
         return $this->columns
-            ->flatMap(fn (Column $column) => $column->expression->getFieldPaths())
-            ->mapWithKeys(function (string $fieldPath) use ($fields) {
-                $dbPath = (new FieldPath($this->entity->id, $fieldPath))->toDbPath($fields);
-
-                return [$fieldPath => $dbPath];
-            })
+            ->flatMap(fn (Column $column) => $column->getDataPaths($fields))
             ->unique()
             ->toArray();
     }
 
-    public function getFieldsSqlNames(): array
+    public function getSqlNames(): array
     {
-        return Collection::make($this->getFieldsDbPaths())
-            ->mapWithKeys(function (string $dbPath, string $fieldPath) {
-                $sqlName = (new Path($this->entity->getModel(), null))->field($dbPath);
+        return Collection::make($this->getDataPaths())
+            ->mapWithKeys(function (string $dataPath, string $fieldPath) {
+                $sqlName = (new Path($this->entity->getModel(), null))->field($dataPath);
+
                 return [$fieldPath => $sqlName];
             })
             ->toArray();
@@ -60,11 +60,11 @@ class Report extends Model
     {
         $model = new ($this->entity->getModelClass());
 
-        $dependencyTree = DependencyTree::make($this->entity->getModel(), $this->getFieldsDbPaths());
+        $dependencyTree = DependencyTree::make($this->entity->getModel(), $this->getDataPaths());
 
         $query = QueryMaker::make($dependencyTree, new Path($model, null));
 
-        $fieldsSqlNames = $this->getFieldsSqlNames();
+        $fieldsSqlNames = $this->getSqlNames();
 
         $selects = $this->columns
             ->map(fn (Column $column) => DB::raw($column->getSelect($fieldsSqlNames)))

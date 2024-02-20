@@ -2,17 +2,15 @@
 
 namespace App\Utils\Expressions;
 
-use App\Models\Structure\Entity;
 use Exception;
-use Illuminate\Support\Collection;
 
 abstract class Expression
 {
     /** @return string[] */
     abstract public function getFieldPaths(): array;
 
-    /** @param array<string, string> $fieldsSqlNames */
-    abstract public function toSql(array $fieldsSqlNames): string;
+    /** @param  array<string, string>  $sqlNames */
+    abstract public function toSql(array $sqlNames): string;
 
     abstract public function toArray(): array;
 

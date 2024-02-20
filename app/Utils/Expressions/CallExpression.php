@@ -2,9 +2,7 @@
 
 namespace App\Utils\Expressions;
 
-use App\Models\Structure\Entity;
 use Exception;
-use Illuminate\Support\Collection;
 
 class CallExpression extends Expression
 {
@@ -36,7 +34,7 @@ class CallExpression extends Expression
         ];
     }
 
-    public function toSql(array $fieldsSqlNames): string
+    public function toSql(array $sqlNames): string
     {
         // TODO: implement
         throw new Exception('Now allowed for now');

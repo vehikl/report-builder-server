@@ -2,9 +2,6 @@
 
 namespace App\Utils\Expressions;
 
-use App\Models\Structure\Entity;
-use Illuminate\Support\Collection;
-
 class StringExpression extends Expression
 {
     public function __construct(public readonly string $value)
@@ -25,7 +22,7 @@ class StringExpression extends Expression
         ];
     }
 
-    public function toSql(array $fieldsSqlNames): string
+    public function toSql(array $sqlNames): string
     {
         return "'$this->value'";
     }

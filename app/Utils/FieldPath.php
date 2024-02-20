@@ -11,7 +11,7 @@ class FieldPath
     }
 
     // TODO: pass entityId here instead of the constructor
-    public function toDbPath(Collection $fields): string
+    public function toDataPath(Collection $fields): string
     {
 
         $identifiers = explode('.', $this->value);

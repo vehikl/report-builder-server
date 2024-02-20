@@ -23,11 +23,11 @@ class DependencyTree
     {
     }
 
-    /** @param string[] $paths */
+    /** @param  string[]  $paths */
     public function merge(Model $model, array $paths): static
     {
 
-        if ($this->model::class !== $model::class) {
+        if ($model::class !== $this->model::class) {
             throw new Exception('Models are different: '.$this->model::class.' !== '.$model::class);
         }
 
@@ -40,7 +40,7 @@ class DependencyTree
         return $this;
     }
 
-    /** @param string[] $paths */
+    /** @param  string[]  $paths */
     public static function make(Model $model, array $paths): self
     {
         $tree = new DependencyTree($model);

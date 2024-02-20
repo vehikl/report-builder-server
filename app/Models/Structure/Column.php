@@ -3,10 +3,12 @@
 namespace App\Models\Structure;
 
 use App\Utils\Expressions\Expression;
+use App\Utils\FieldPath;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /** @property Expression $expression */
@@ -30,6 +32,22 @@ class Column extends Model
             get: fn (string $value) => Expression::make(json_decode($value, true)),
             set: fn (Expression|array $value) => json_encode(is_array($value) ? $value : $value->toArray()),
         );
+    }
+
+    /**
+     * @param  Collection<int, Field>  $fields
+     * @return array<string, string>
+     */
+    public function getDataPaths(Collection $fields): array
+    {
+        return Collection::make($this->expression->getFieldPaths())
+            ->unique()
+            ->mapWithKeys(function (string $fieldPath) use ($fields) {
+                $dataPath = (new FieldPath($this->report->entity->id, $fieldPath))->toDataPath($fields);
+
+                return [$fieldPath => $dataPath];
+            })
+            ->toArray();
     }
 
     protected function normalizedName(): Attribute
@@ -65,7 +83,7 @@ class Column extends Model
         ];
     }
 
-    /** @param array<string, string> $fieldsSqlNames */
+    /** @param  array<string, string>  $fieldsSqlNames */
     public function getSelect(array $fieldsSqlNames): string
     {
         return "{$this->expression->toSql($fieldsSqlNames)} as $this->key";
