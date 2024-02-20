@@ -15,11 +15,6 @@ class Path
     {
     }
 
-    public function __invoke(string $name): string
-    {
-        return $this->field($name);
-    }
-
     public function field(string $name): SqlName
     {
         $keys = explode('.', $name);

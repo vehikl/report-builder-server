@@ -13,12 +13,12 @@ class QueryMaker
 {
     public static function make(DependencyTree $tree, Path $path): Builder
     {
-        $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $tree->columns);
+        $columnSelects = array_map(fn (string $column) => "$column as {$path->field($column)}", $tree->columns);
 
         $attributeSelects = Arr::map($tree->attributes, function (ExtendedAttribute $attribute, string $attributeName) use ($path) {
             $dependencies = $path->fields($attribute->getDependencies());
 
-            return DB::raw("{$attribute->toSql(...$dependencies)} as {$path($attributeName)}");
+            return DB::raw("{$attribute->toSql(...$dependencies)} as {$path->field($attributeName)}");
         });
 
         $leftQuery = DB::table($tree->model->getTable())
