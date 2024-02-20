@@ -57,7 +57,9 @@ class DependencyTree
             foreach ($keys as $i => $key) {
                 if ($i === array_key_last($keys)) {
                     if (DataModel::isColumn($currentTree->model, $key)) {
-                        $currentTree->columns[] = $key;
+                        if (! in_array($key, $currentTree->columns)) {
+                            $currentTree->columns[] = $key;
+                        }
 
                         continue;
                     }
