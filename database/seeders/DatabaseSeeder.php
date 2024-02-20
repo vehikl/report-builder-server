@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Database\Seeders\Data\EmployeeSeeder;
-use Database\Seeders\Structure\EntitySeeder;
-use Database\Seeders\Structure\ReportSeeder;
+use Database\Seeders\Client\EmployeeSeeder;
+use Database\Seeders\Core\EntitySeeder;
+use Database\Seeders\Core\ReportSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Reports;
 
-use App\Models\Structure\Column;
-use App\Models\Structure\Report;
+use App\Models\Core\Column;
+use App\Models\Core\Report;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 

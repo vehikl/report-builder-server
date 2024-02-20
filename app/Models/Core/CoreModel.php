@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Data;
+namespace App\Models\Core;
 
 use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\HasExtendedRelationships;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use ReflectionClass;
 
-class DataModel extends Model
+class CoreModel extends Model
 {
     use HasExtendedRelationships;
 

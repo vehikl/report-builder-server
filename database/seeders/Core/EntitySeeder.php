@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Seeders\Structure;
+namespace Database\Seeders\Core;
 
-use App\Models\Structure\Entity;
-use App\Models\Structure\Field;
+use App\Models\Core\Entity;
+use App\Models\Core\Field;
 use Illuminate\Database\Seeder;
 
 class EntitySeeder extends Seeder

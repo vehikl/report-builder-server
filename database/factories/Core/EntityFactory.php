@@ -1,14 +1,14 @@
 <?php
 
-namespace Database\Factories\Structure;
+namespace Database\Factories\Core;
 
-use App\Models\Structure\Field;
+use App\Models\Core\Entity;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Field>
+ * @extends Factory<Entity>
  */
-class FieldFactory extends Factory
+class EntityFactory extends Factory
 {
     /**
      * Define the model's default state.

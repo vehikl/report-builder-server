@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Structure;
+namespace App\Models\Core;
 
 use App\Utils\Expressions\Expression;
 use App\Utils\FieldPath;

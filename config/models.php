@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'jobs' => \App\Models\Data\Job::class,
-    'employees' => \App\Models\Data\Employee::class,
+    'jobs' => \App\Models\Client\Job::class,
+    'employees' => \App\Models\Client\Employee::class,
 ];

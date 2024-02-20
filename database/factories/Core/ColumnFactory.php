@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories\Structure;
+namespace Database\Factories\Core;
 
-use App\Models\Structure\Column;
+use App\Models\Core\Column;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

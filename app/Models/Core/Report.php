@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Structure;
+namespace App\Models\Core;
 
 use App\Utils\Dependency\DependencyTree;
 use App\Utils\Path;
@@ -82,7 +82,7 @@ class Report extends Model
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getQuery()->get(),
+            'records' => $this->getQuery()->take(20)->get(),
         ];
     }
 }

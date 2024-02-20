@@ -2,7 +2,7 @@
 
 namespace App\Utils\Dependency;
 
-use App\Models\Data\DataModel;
+use App\Models\Core\CoreModel;
 use App\Utils\Sql\ExtendedAttribute;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -56,7 +56,7 @@ class DependencyTree
 
             foreach ($keys as $i => $key) {
                 if ($i === array_key_last($keys)) {
-                    if (DataModel::isColumn($currentTree->model, $key)) {
+                    if (CoreModel::isColumn($currentTree->model, $key)) {
                         if (! in_array($key, $currentTree->columns)) {
                             $currentTree->columns[] = $key;
                         }
@@ -64,7 +64,7 @@ class DependencyTree
                         continue;
                     }
 
-                    if ($attribute = DataModel::getSqlAttribute($currentTree->model, $key)) {
+                    if ($attribute = CoreModel::getSqlAttribute($currentTree->model, $key)) {
                         $currentTree->attributes[$key] = $attribute;
 
                         $currentTree->merge($currentTree->model, $attribute->getDependencies());
@@ -75,7 +75,7 @@ class DependencyTree
                     throw new Exception("The key $key in $path is neither a column or an attribute of ".$currentTree->model::class);
                 }
 
-                if ($relation = DataModel::getLeftJoinedRelation($currentTree->model, $key)) {
+                if ($relation = CoreModel::getLeftJoinedRelation($currentTree->model, $key)) {
                     if (! array_key_exists($key, $currentTree->relations)) {
                         $currentTree->relations[$key] = new DependencyRelation($relation);
                     }

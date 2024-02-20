@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Seeders\Structure;
+namespace Database\Seeders\Core;
 
-use App\Models\Structure\Column;
-use App\Models\Structure\Report;
+use App\Models\Core\Column;
+use App\Models\Core\Report;
 use App\Utils\Expressions\FieldExpression;
 use Illuminate\Database\Seeder;
 

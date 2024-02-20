@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Data;
+namespace App\Models\Client;
 
+use App\Models\Core\CoreModel;
 use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\ExtendedBelongsTo;
 use App\Utils\Sql\SqlFn;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\JoinClause;
 
-class Employee extends DataModel
+class Employee extends CoreModel
 {
     use HasFactory;
 
