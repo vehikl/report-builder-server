@@ -23,7 +23,7 @@ class PreviewReportRequest extends FormRequest
     public function columns(): Collection
     {
         return collect($this->input('columns'))
-            ->map(fn (array $column) => Column::query()->make($column));
+            ->map(fn (array $column, int $i) => Column::query()->make(['position' => $i, ...$column]));
     }
 
     public function report(): Report

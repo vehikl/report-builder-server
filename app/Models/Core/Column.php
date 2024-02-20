@@ -19,6 +19,7 @@ class Column extends Model
     protected $fillable = [
         'name',
         'expression',
+        'position',
     ];
 
     public function report(): BelongsTo

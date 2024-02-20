@@ -30,7 +30,7 @@ class Report extends Model
 
     public function columns(): HasMany
     {
-        return $this->hasMany(Column::class);
+        return $this->hasMany(Column::class)->orderBy('position');
     }
 
     /** @return array<string, string> */
@@ -82,7 +82,7 @@ class Report extends Model
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getQuery()->take(20)->get(),
+            'records' => $this->getQuery()->get(),
         ];
     }
 }
