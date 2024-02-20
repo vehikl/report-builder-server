@@ -51,6 +51,7 @@ class Report extends Model
                 if ($i === array_key_last($keys)) {
                     if (DependencyTracker::isColumn($currentTree->model, $key)) {
                         $currentTree->columns[] = $key;
+
                         continue;
                     }
 

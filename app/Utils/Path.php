@@ -2,14 +2,11 @@
 
 namespace App\Utils;
 
-use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Sql\SqlName;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use ReflectionClass;
 
 class Path
 {
@@ -22,7 +19,7 @@ class Path
         return $this->field($name);
     }
 
-    public function field(string $name): string
+    public function field(string $name): SqlName
     {
         $keys = explode('.', $name);
 
@@ -32,17 +29,13 @@ class Path
 
         foreach ($keys as $i => $key) {
             if ($i === count($keys) - 1) {
-                $columns = Schema::getColumnListing($currentModel->getTable());
+                if (
+                    DependencyTracker::isColumn($currentModel, $key) ||
+                    DependencyTracker::isSqlAttribute($currentModel, $key)
+                ) {
+                    $resolvedPath = $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
 
-                if (in_array($key, $columns)) {
-
-                    return $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
-                }
-
-                $sqlAttribute = $this->getSqlAttribute($currentModel, $key);
-
-                if ($sqlAttribute) {
-                    return $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
+                    return new SqlName($resolvedPath);
                 }
 
                 throw new Exception("The key $key is not a column or SQL attribute in ".get_class($currentModel));
@@ -59,6 +52,15 @@ class Path
         }
 
         throw new Exception('Something went wrong');
+    }
+
+    /**
+     * @param  string[]  $names
+     * @return SqlName[]
+     */
+    public function fields(array $names): array
+    {
+        return array_map(fn (string $name) => $this->field($name), $names);
     }
 
     public function relation(string $key): string
@@ -79,20 +81,5 @@ class Path
         $appendedBasePath = $this->basePath === null ? $key : "{$this->basePath}__$key";
 
         return new Path($relation->getRelated(), $appendedBasePath);
-    }
-
-    private function getSqlAttribute(Model $model, string $name): ?ExtendedAttribute
-    {
-        if (! $model->hasAttributeMutator($name)) {
-            return null;
-        }
-
-        $attribute = (new ReflectionClass($model))->getMethod(Str::camel($name))->invoke($model);
-
-        if (! is_a($attribute, ExtendedAttribute::class) || ! $attribute->hasSqlDefinition()) {
-            return null;
-        }
-
-        return $attribute;
     }
 }

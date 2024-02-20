@@ -4,9 +4,6 @@ namespace App\Utils;
 
 use App\Utils\Dependency\DependencyTree;
 use App\Utils\Sql\ExtendedAttribute;
-use App\Utils\Sql\ExtendedBelongsTo;
-use App\Utils\Sql\SqlName;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
@@ -19,7 +16,7 @@ class QueryMaker
         $columnSelects = array_map(fn (string $column) => "$column as {$path($column)}", $tree->columns);
 
         $attributeSelects = Arr::map($tree->attributes, function (ExtendedAttribute $attribute, string $attributeName) use ($path) {
-            $dependencies = array_map(fn (string $value) => new SqlName($path($value)), $attribute->getSqlDependencies()); // TODO: $deps = $path->fields($attribute->getDependencies)
+            $dependencies = $path->fields($attribute->getSqlDependencies());
 
             return DB::raw("{$attribute->toSql(...$dependencies)} as {$path($attributeName)}");
         });
@@ -40,8 +37,7 @@ class QueryMaker
             $rightQuery = self::make($dependencyRelation->tree, $newPath);
 
             $outerQuery->leftJoinSub($rightQuery, $path->relation($relationKey), function (JoinClause $join) use ($path, $relation) {
-                $dependencies = array_map(fn (string $dependency) => new SqlName($path($dependency)), $relation->getLeftJoinDependencies());
-                $relation->applyLeftJoin($join, ...$dependencies);
+                $relation->applyLeftJoin($join, ...$path->fields($relation->getLeftJoinDependencies()));
             });
         }
 

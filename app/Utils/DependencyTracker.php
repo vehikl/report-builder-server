@@ -105,6 +105,11 @@ class DependencyTracker
         return $attribute;
     }
 
+    public static function isSqlAttribute(Model $model, string $name): bool
+    {
+        return boolval(self::getSqlAttribute($model, $name));
+    }
+
     public static function getLeftJoinedRelation(Model $model, $key): ?LeftJoinable
     {
         if (! $model->isRelation($key)) {
