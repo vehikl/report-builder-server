@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Entities\ListEntities;
+use App\Http\Controllers\Reports\DownloadReport;
 use App\Http\Controllers\Reports\ListReports;
 use App\Http\Controllers\Reports\PreviewReport;
 use App\Http\Controllers\Reports\ShowReport;
@@ -18,6 +19,7 @@ Route::prefix('reports')->group(function () {
     Route::get('/', ListReports::class);
     Route::get('{report}', ShowReport::class);
     Route::get('{report}/preview', ShowReportPreview::class);
-});
 
-Route::post('preview-report', PreviewReport::class);
+    Route::post('preview', PreviewReport::class);
+    Route::post('download', DownloadReport::class);
+});

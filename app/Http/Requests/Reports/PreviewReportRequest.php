@@ -17,6 +17,9 @@ class PreviewReportRequest extends FormRequest
             'columns' => ['required', 'array', 'filled'],
             'columns.*.name' => ['required', 'string'],
             'columns.*.expression' => ['required', 'array'],
+            'sort' => ['sometimes', 'nullable', 'array:key,direction'],
+            'sort.key' => ['string'],
+            'sort.direction' => ['in:asc,desc'],
         ];
     }
 

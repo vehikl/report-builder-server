@@ -55,7 +55,8 @@ class Report extends Model
             ->toArray();
     }
 
-    public function getQuery(): Builder
+    /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
+    public function getQuery(?array $sort): Builder
     {
         $model = new ($this->entity->getModelClass());
 
@@ -69,11 +70,20 @@ class Report extends Model
             ->map(fn (Column $column) => DB::raw($column->getSelect($sqlNames)))
             ->toArray();
 
-        return DB::query()->from($query, $this->name)->select($selects);
+        return DB::query()
+            ->from($query, $this->name)
+            ->select($selects)
+            ->when(
+                $sort,
+                fn (Builder $query, array $sort) => $query->orderBy($sort['key'], $sort['direction'])
+            );
     }
 
-    public function preview(): array
+    /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
+    public function preview(?array $sort): array
     {
+        $query = $this->getQuery($sort);
+
         return [
             'name' => $this->name,
             'entity_id' => $this->entity_id,
@@ -82,7 +92,17 @@ class Report extends Model
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $this->getQuery()->get(),
+            'records' => $query->paginate(40),
+            'sort' => $sort,
+        ];
+    }
+
+    /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
+    public function spreadsheet(?array $sort): array
+    {
+        return [
+            $this->columns->map(fn (Column $column) => $column->name)->toArray(),
+            ...$this->getQuery($sort)->get()->map(fn (object $record) => (array) $record),
         ];
     }
 }
