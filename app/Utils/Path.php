@@ -35,7 +35,7 @@ class Path
                 throw new Exception("The key $key is not a column or SQL attribute in ".get_class($currentModel));
             }
 
-            if (! $relation = CoreModel::getLeftJoinedRelation($currentModel, $key)) {
+            if (! $relation = CoreModel::getJoinedRelation($currentModel, $key)) {
                 throw new Exception('Not a relation.');
             }
 
@@ -56,7 +56,7 @@ class Path
 
     public function relation(string $key): string
     {
-        if (! CoreModel::isLeftJoinedRelation($this->model, $key)) {
+        if (! CoreModel::isJoinedRelation($this->model, $key)) {
             throw new Exception('Not a relation.');
         }
 
@@ -65,7 +65,7 @@ class Path
 
     public function append(string $key): static
     {
-        if (! $relation = CoreModel::getLeftJoinedRelation($this->model, $key)) {
+        if (! $relation = CoreModel::getJoinedRelation($this->model, $key)) {
             throw new Exception('Not a relation.');
         }
 

@@ -3,7 +3,7 @@
 namespace App\Models\Core;
 
 use App\Utils\Sql\HasExtendedRelationships;
-use App\Utils\Sql\LeftJoinable;
+use App\Utils\Sql\Joinable;
 use App\Utils\Sql\SqlAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -40,7 +40,7 @@ class CoreModel extends Model
         return boolval(self::getSqlAttribute($model, $name));
     }
 
-    public static function getLeftJoinedRelation(Model $model, $key): ?LeftJoinable
+    public static function getJoinedRelation(Model $model, $key): ?Joinable
     {
         if (! $model->isRelation($key)) {
             return null;
@@ -49,15 +49,15 @@ class CoreModel extends Model
         /** @var Relation $relation */
         $relation = $model->$key();
 
-        if (! is_a($relation, LeftJoinable::class) || ! $relation->hasLeftJoinDefinition()) {
+        if (! is_a($relation, Joinable::class) || ! $relation->hasJoin()) {
             return null;
         }
 
         return $relation;
     }
 
-    public static function isLeftJoinedRelation(Model $model, $name): bool
+    public static function isJoinedRelation(Model $model, $name): bool
     {
-        return boolval(self::getLeftJoinedRelation($model, $name));
+        return boolval(self::getJoinedRelation($model, $name));
     }
 }

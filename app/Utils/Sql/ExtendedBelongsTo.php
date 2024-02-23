@@ -7,14 +7,14 @@ use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Query\JoinClause;
 
-class ExtendedBelongsTo extends BelongsTo implements LeftJoinable
+class ExtendedBelongsTo extends BelongsTo implements Joinable
 {
     /** @var string[] */
     protected array $dependencies = [];
 
     protected ?Closure $leftJoinDefinition = null;
 
-    public function withLeftJoin(array $dependencies, callable $definition): static
+    public function withJoin(array $dependencies, callable $definition): static
     {
         $this->dependencies = $dependencies;
         $this->leftJoinDefinition = $definition(...);
@@ -22,7 +22,7 @@ class ExtendedBelongsTo extends BelongsTo implements LeftJoinable
         return $this;
     }
 
-    public function hasLeftJoinDefinition(): bool
+    public function hasJoin(): bool
     {
         return $this->leftJoinDefinition !== null;
     }
@@ -32,7 +32,7 @@ class ExtendedBelongsTo extends BelongsTo implements LeftJoinable
         return $this->dependencies;
     }
 
-    public function applyLeftJoin(JoinClause $join, SqlName ...$dependencies): void
+    public function applyJoin(JoinClause $join, SqlName ...$dependencies): void
     {
         $leftJoinExtension = $this->leftJoinDefinition;
 

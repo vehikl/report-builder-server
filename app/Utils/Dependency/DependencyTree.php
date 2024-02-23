@@ -75,7 +75,7 @@ class DependencyTree
                     throw new Exception("The key $key in $path is neither a column or an attribute of ".$currentTree->model::class);
                 }
 
-                if ($relation = CoreModel::getLeftJoinedRelation($currentTree->model, $key)) {
+                if ($relation = CoreModel::getJoinedRelation($currentTree->model, $key)) {
                     if (! array_key_exists($key, $currentTree->relations)) {
                         $currentTree->relations[$key] = new DependencyRelation($relation);
                     }

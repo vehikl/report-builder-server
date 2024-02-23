@@ -37,7 +37,7 @@ class QueryMaker
             $rightQuery = self::make($dependencyRelation->tree, $newPath);
 
             $outerQuery->leftJoinSub($rightQuery, $path->relation($relationKey), function (JoinClause $join) use ($path, $relation) {
-                $relation->applyLeftJoin($join, ...$path->fields($relation->getDependencies()));
+                $relation->applyJoin($join, ...$path->fields($relation->getDependencies()));
             });
         }
 

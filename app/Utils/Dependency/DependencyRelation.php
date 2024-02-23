@@ -2,13 +2,13 @@
 
 namespace App\Utils\Dependency;
 
-use App\Utils\Sql\LeftJoinable;
+use App\Utils\Sql\Joinable;
 
 class DependencyRelation
 {
     public readonly DependencyTree $tree;
 
-    public function __construct(public readonly LeftJoinable $relation)
+    public function __construct(public readonly Joinable $relation)
     {
         $this->tree = new DependencyTree($this->relation->getRelated());
     }

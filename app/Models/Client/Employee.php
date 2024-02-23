@@ -28,7 +28,7 @@ class Employee extends CoreModel
     {
         $relation = $this->extendedBelongsTo(Employee::class, 'manager_id');
 
-        return $relation->withLeftJoin(
+        return $relation->withJoin(
             ['manager_id', 'manager.id'],
             function (JoinClause $join, SqlName $employeeManagerId, SqlName $managerId) {
                 $join->on($employeeManagerId, '=', $managerId);
@@ -40,7 +40,7 @@ class Employee extends CoreModel
     {
         $relation = $this->extendedBelongsTo(Job::class, 'job_code', 'code');
 
-        return $relation->withLeftJoin(
+        return $relation->withJoin(
             ['job_code', 'job.code'],
             function (JoinClause $join, SqlName $employeeJobCode, SqlName $jobCode) {
                 $join->on($employeeJobCode, '=', $jobCode);
