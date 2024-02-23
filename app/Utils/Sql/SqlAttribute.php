@@ -14,7 +14,7 @@ class SqlAttribute extends Attribute
 
     /**
      * @param  string[]  $dependencies
-     * @param  callable(SqlName ...$names): string  $sql
+     * @param  callable(SqlContext $ctx, SqlName ...$names): string  $sql
      */
     public function __construct(array $dependencies, callable $sql, ?callable $get = null, ?callable $set = null)
     {
@@ -39,10 +39,10 @@ class SqlAttribute extends Attribute
         return $this->dependencies;
     }
 
-    public function toSql(SqlName ...$names): string
+    public function toSql(SqlContext $ctx, SqlName ...$names): string
     {
         $sqlDefinition = $this->sqlDefinition;
 
-        return $sqlDefinition(...$names);
+        return $sqlDefinition($ctx, ...$names);
     }
 }

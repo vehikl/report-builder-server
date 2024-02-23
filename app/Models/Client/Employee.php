@@ -5,7 +5,7 @@ namespace App\Models\Client;
 use App\Models\Core\CoreModel;
 use App\Utils\Sql\ExtendedBelongsTo;
 use App\Utils\Sql\SqlAttribute;
-use App\Utils\Sql\SqlFn;
+use App\Utils\Sql\SqlContext;
 use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -59,7 +59,7 @@ class Employee extends CoreModel
             get: fn () => $this->salary + $this->bonus,
 
             dependencies: ['salary', 'bonus'],
-            sql: fn (SqlName $salary, SqlName $bonus) => "$salary + $bonus"
+            sql: fn (SqlContext $ctx, SqlName $salary, SqlName $bonus) => "$salary + $bonus"
         );
     }
 
@@ -69,7 +69,7 @@ class Employee extends CoreModel
             get: fn () => $this->job->title,
 
             dependencies: ['job.title'],
-            sql: fn (SqlName $jobTitle) => $jobTitle
+            sql: fn (SqlContext $ctx, SqlName $jobTitle) => $jobTitle
         );
     }
 
@@ -79,7 +79,7 @@ class Employee extends CoreModel
             get: fn () => $this->salary * 2,
 
             dependencies: ['salary'],
-            sql: fn (SqlName $salary) => "$salary * 2"
+            sql: fn (SqlContext $ctx, SqlName $salary) => "$salary * 2"
         );
     }
 
@@ -88,9 +88,9 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => "$this->name ({$this->job->code}: {$this->job->title})",
 
-            dependencies: ['name', 'job.title', 'job.code'],
-            sql: function (SqlName $name, SqlName $jobTitle, SqlName $jobCode) {
-                return SqlFn::CONCAT($name, ' ', $jobTitle, ' ', $jobCode);
+            dependencies: ['name', 'job.code', 'job.title'],
+            sql: function (SqlContext $ctx, SqlName $name, SqlName $jobCode, SqlName $jobTitle) {
+                return $ctx->CONCAT($name, ' (', $jobCode, ': ', $jobTitle, ')');
             }
         );
     }
@@ -101,8 +101,8 @@ class Employee extends CoreModel
             get: fn () => "$this->name ({$this->job->display_name})",
 
             dependencies: ['name', 'job.display_name'],
-            sql: function (SqlName $name, SqlName $jobDisplayName) {
-                return SqlFn::CONCAT($name, ' ', '(', $jobDisplayName, ')');
+            sql: function (SqlContext $ctx, SqlName $name, SqlName $jobDisplayName) {
+                return $ctx->CONCAT($name, ' ', '(', $jobDisplayName, ')');
             }
         );
     }

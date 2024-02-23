@@ -4,7 +4,7 @@ namespace App\Models\Client;
 
 use App\Models\Core\CoreModel;
 use App\Utils\Sql\SqlAttribute;
-use App\Utils\Sql\SqlFn;
+use App\Utils\Sql\SqlContext;
 use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,7 +27,7 @@ class Job extends CoreModel
             dependencies: ['code', 'title'],
 
             get: fn () => "$this->code $this->title",
-            sql: fn (SqlName $code, SqlName $title) => SqlFn::CONCAT($code, ': ', $title)
+            sql: fn (SqlContext $ctx, SqlName $code, SqlName $title) => $ctx->CONCAT($code, ': ', $title)
         );
     }
 }

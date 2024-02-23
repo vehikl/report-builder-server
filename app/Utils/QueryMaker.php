@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Utils\Dependency\DependencyTree;
 use App\Utils\Sql\SqlAttribute;
+use App\Utils\Sql\SqlContext;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
@@ -18,7 +19,7 @@ class QueryMaker
         $attributeSelects = Arr::map($tree->attributes, function (SqlAttribute $attribute, string $attributeName) use ($path) {
             $dependencies = $path->fields($attribute->getDependencies());
 
-            return DB::raw("{$attribute->toSql(...$dependencies)} as {$path->field($attributeName)}");
+            return DB::raw("{$attribute->toSql(new SqlContext(), ...$dependencies)} as {$path->field($attributeName)}");
         });
 
         $leftQuery = DB::table($tree->model->getTable())
