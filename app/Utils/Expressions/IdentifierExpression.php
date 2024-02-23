@@ -2,8 +2,6 @@
 
 namespace App\Utils\Expressions;
 
-use Exception;
-
 class IdentifierExpression extends Expression
 {
     public function __construct(public readonly string $identifier)
@@ -25,7 +23,6 @@ class IdentifierExpression extends Expression
 
     public function toSql(ExpressionContext $ctx): string
     {
-        // TODO: implement
-        throw new Exception('Now allowed for now');
+        return $ctx->getValue($this->identifier);
     }
 }
