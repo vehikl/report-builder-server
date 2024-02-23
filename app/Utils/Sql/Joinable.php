@@ -18,7 +18,7 @@ interface Joinable
     /** @return string[] */
     public function getDependencies(): array;
 
-    public function applyJoin(JoinClause $join, SqlName ...$dependencies): void;
+    public function applyJoin(JoinContext $ctx, SqlName ...$dependencies): void;
 
     /** @return Model */
     public function getRelated();

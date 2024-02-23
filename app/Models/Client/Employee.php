@@ -4,13 +4,13 @@ namespace App\Models\Client;
 
 use App\Models\Core\CoreModel;
 use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Sql\JoinContext;
 use App\Utils\Sql\SqlAttribute;
 use App\Utils\Sql\SqlContext;
 use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Query\JoinClause;
 
 class Employee extends CoreModel
 {
@@ -30,8 +30,8 @@ class Employee extends CoreModel
 
         return $relation->withJoin(
             ['manager_id', 'manager.id'],
-            function (JoinClause $join, SqlName $employeeManagerId, SqlName $managerId) {
-                $join->on($employeeManagerId, '=', $managerId);
+            function (JoinContext $ctx, SqlName $employeeManagerId, SqlName $managerId) {
+                $ctx->join->on($employeeManagerId, '=', $managerId);
             }
         );
     }
@@ -42,8 +42,8 @@ class Employee extends CoreModel
 
         return $relation->withJoin(
             ['job_code', 'job.code'],
-            function (JoinClause $join, SqlName $employeeJobCode, SqlName $jobCode) {
-                $join->on($employeeJobCode, '=', $jobCode);
+            function (JoinContext $ctx, SqlName $employeeJobCode, SqlName $jobCode) {
+                $ctx->join->on($employeeJobCode, '=', $jobCode);
             }
         );
     }

@@ -5,7 +5,6 @@ namespace App\Utils\Sql;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Query\JoinClause;
 
 class ExtendedBelongsTo extends BelongsTo implements Joinable
 {
@@ -32,7 +31,7 @@ class ExtendedBelongsTo extends BelongsTo implements Joinable
         return $this->dependencies;
     }
 
-    public function applyJoin(JoinClause $join, SqlName ...$dependencies): void
+    public function applyJoin(JoinContext $ctx, SqlName ...$dependencies): void
     {
         $leftJoinExtension = $this->leftJoinDefinition;
 
@@ -40,6 +39,6 @@ class ExtendedBelongsTo extends BelongsTo implements Joinable
             throw new Exception('The left join definition is not set. Use `withLeftJoin`');
         }
 
-        $leftJoinExtension($join, ...$dependencies);
+        $leftJoinExtension($ctx, ...$dependencies);
     }
 }

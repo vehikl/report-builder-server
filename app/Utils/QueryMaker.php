@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Utils\Dependency\DependencyTree;
+use App\Utils\Sql\JoinContext;
 use App\Utils\Sql\SqlAttribute;
 use App\Utils\Sql\SqlContext;
 use Illuminate\Database\Query\Builder;
@@ -38,7 +39,7 @@ class QueryMaker
             $rightQuery = self::make($dependencyRelation->tree, $newPath);
 
             $outerQuery->leftJoinSub($rightQuery, $path->relation($relationKey), function (JoinClause $join) use ($path, $relation) {
-                $relation->applyJoin($join, ...$path->fields($relation->getDependencies()));
+                $relation->applyJoin(new JoinContext($join), ...$path->fields($relation->getDependencies()));
             });
         }
 
