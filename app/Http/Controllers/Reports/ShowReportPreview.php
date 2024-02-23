@@ -12,6 +12,6 @@ class ShowReportPreview extends Controller
 {
     public function __invoke(Request $request, Report $report): JsonResponse
     {
-        return JsonResource::make($report->preview())->toResponse($request);
+        return JsonResource::make($report->preview(null))->toResponse($request);
     }
 }

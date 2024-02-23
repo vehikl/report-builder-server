@@ -3,6 +3,7 @@
 namespace App\Models\Core;
 
 use App\Utils\Dependency\DependencyTree;
+use App\Utils\Expressions\ExpressionContext;
 use App\Utils\Path;
 use App\Utils\QueryMaker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,10 +65,10 @@ class Report extends Model
 
         $query = QueryMaker::make($dependencyTree, new Path($model, null));
 
-        $sqlNames = $this->getSqlNames();
+        $context = ExpressionContext::make($this->getSqlNames());
 
         $selects = $this->columns
-            ->map(fn (Column $column) => DB::raw($column->getSelect($sqlNames)))
+            ->map(fn (Column $column) => DB::raw($column->getSelect($context)))
             ->toArray();
 
         return DB::query()

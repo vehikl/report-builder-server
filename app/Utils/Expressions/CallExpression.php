@@ -2,7 +2,8 @@
 
 namespace App\Utils\Expressions;
 
-use Exception;
+use App\Utils\Sql\FunctionDefinition;
+use App\Utils\Sql\SqlName;
 
 class CallExpression extends Expression
 {
@@ -33,9 +34,11 @@ class CallExpression extends Expression
         ];
     }
 
-    public function toSql(array $sqlNames): string
+    /** @param  array<string, FunctionDefinition>  $functions */
+    public function toSql(ExpressionContext $ctx): string
     {
-        // TODO: implement
-        throw new Exception('Now allowed for now');
+        $args = array_map(fn (Expression $arg) => SqlName::make($arg->toSql($ctx)), $this->args);
+
+        return $ctx->functions[$this->identifier]->toSql(...$args);
     }
 }

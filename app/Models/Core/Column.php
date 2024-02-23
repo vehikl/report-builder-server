@@ -3,6 +3,7 @@
 namespace App\Models\Core;
 
 use App\Utils\Expressions\Expression;
+use App\Utils\Expressions\ExpressionContext;
 use App\Utils\FieldPath;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -84,9 +85,8 @@ class Column extends Model
         ];
     }
 
-    /** @param  array<string, string>  $sqlNames */
-    public function getSelect(array $sqlNames): string
+    public function getSelect(ExpressionContext $ctx): string
     {
-        return "{$this->expression->toSql($sqlNames)} as $this->key";
+        return "{$this->expression->toSql($ctx)} as $this->key";
     }
 }

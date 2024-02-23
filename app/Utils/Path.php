@@ -29,7 +29,7 @@ class Path
                 ) {
                     $resolvedPath = $this->basePath === null ? $normalizedName : "{$this->basePath}__$normalizedName";
 
-                    return new SqlName($resolvedPath);
+                    return SqlName::make($resolvedPath);
                 }
 
                 throw new Exception("The key $key is not a column or SQL attribute in ".get_class($currentModel));

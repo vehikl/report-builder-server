@@ -10,6 +10,11 @@ class SqlName implements Stringable
     {
     }
 
+    public static function make(string $name): self
+    {
+        return new self($name);
+    }
+
     public function __toString(): string
     {
         return $this->name;

@@ -23,7 +23,7 @@ class IdentifierExpression extends Expression
         ];
     }
 
-    public function toSql(array $sqlNames): string
+    public function toSql(ExpressionContext $ctx): string
     {
         // TODO: implement
         throw new Exception('Now allowed for now');

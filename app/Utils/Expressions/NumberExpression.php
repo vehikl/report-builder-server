@@ -26,7 +26,7 @@ class NumberExpression extends Expression
         ];
     }
 
-    public function toSql(array $sqlNames): string
+    public function toSql(ExpressionContext $ctx): string
     {
         return $this->value;
     }

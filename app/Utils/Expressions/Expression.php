@@ -9,8 +9,7 @@ abstract class Expression
     /** @return string[] */
     abstract public function getFieldPaths(): array;
 
-    /** @param  array<string, string>  $sqlNames */
-    abstract public function toSql(array $sqlNames): string;
+    abstract public function toSql(ExpressionContext $ctx): string;
 
     abstract public function toArray(): array;
 
