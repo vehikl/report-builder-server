@@ -3,8 +3,8 @@
 namespace App\Models\Client;
 
 use App\Models\Core\CoreModel;
-use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Sql\SqlAttribute;
 use App\Utils\Sql\SqlFn;
 use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -55,47 +55,55 @@ class Employee extends CoreModel
 
     protected function totalCompensation(): Attribute
     {
-        return Attribute::make(
-            get: fn () => $this->salary + $this->bonus
+        return SqlAttribute::new(
+            get: fn () => $this->salary + $this->bonus,
+
+            dependencies: ['salary', 'bonus'],
+            sql: fn (SqlName $salary, SqlName $bonus) => "$salary + $bonus"
         );
     }
 
     protected function jobTitle(): Attribute
     {
-        return Attribute::make(
-            get: fn () => $this->job->title
+        return SqlAttribute::new(
+            get: fn () => $this->job->title,
+
+            dependencies: ['job.title'],
+            sql: fn (SqlName $jobTitle) => $jobTitle
         );
     }
 
     protected function doubleSalary(): Attribute
     {
-        return ExtendedAttribute::make(
-            get: fn () => $this->salary * 2
-        )
-            ->withSql(['salary'], fn (SqlName $salary) => "$salary * 2");
+        return SqlAttribute::new(
+            get: fn () => $this->salary * 2,
+
+            dependencies: ['salary'],
+            sql: fn (SqlName $salary) => "$salary * 2"
+        );
     }
 
     protected function nameWithJob(): Attribute
     {
-        return ExtendedAttribute::make(
-            get: fn () => "$this->name ({$this->job->code}: {$this->job->title})"
-        )
-            ->withSql(
-                ['name', 'job.title', 'job.code'],
-                function (SqlName $name, SqlName $jobTitle, SqlName $jobCode) {
-                    return SqlFn::CONCAT($name, ' ', $jobTitle, ' ', $jobCode);
-                });
+        return SqlAttribute::new(
+            get: fn () => "$this->name ({$this->job->code}: {$this->job->title})",
+
+            dependencies: ['name', 'job.title', 'job.code'],
+            sql: function (SqlName $name, SqlName $jobTitle, SqlName $jobCode) {
+                return SqlFn::CONCAT($name, ' ', $jobTitle, ' ', $jobCode);
+            }
+        );
     }
 
     protected function nameWithJobDisplayName(): Attribute
     {
-        return ExtendedAttribute::make(
-            get: fn () => "$this->name ({$this->job->display_name})"
-        )
-            ->withSql(
-                ['name', 'job.display_name'],
-                function (SqlName $name, SqlName $jobDisplayName) {
-                    return SqlFn::CONCAT($name, ' ', '(', $jobDisplayName, ')');
-                });
+        return SqlAttribute::new(
+            get: fn () => "$this->name ({$this->job->display_name})",
+
+            dependencies: ['name', 'job.display_name'],
+            sql: function (SqlName $name, SqlName $jobDisplayName) {
+                return SqlFn::CONCAT($name, ' ', '(', $jobDisplayName, ')');
+            }
+        );
     }
 }

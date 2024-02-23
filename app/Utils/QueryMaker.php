@@ -3,7 +3,7 @@
 namespace App\Utils;
 
 use App\Utils\Dependency\DependencyTree;
-use App\Utils\Sql\ExtendedAttribute;
+use App\Utils\Sql\SqlAttribute;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
@@ -15,7 +15,7 @@ class QueryMaker
     {
         $columnSelects = array_map(fn (string $column) => "$column as {$path->field($column)}", $tree->columns);
 
-        $attributeSelects = Arr::map($tree->attributes, function (ExtendedAttribute $attribute, string $attributeName) use ($path) {
+        $attributeSelects = Arr::map($tree->attributes, function (SqlAttribute $attribute, string $attributeName) use ($path) {
             $dependencies = $path->fields($attribute->getDependencies());
 
             return DB::raw("{$attribute->toSql(...$dependencies)} as {$path->field($attributeName)}");

@@ -3,7 +3,7 @@
 namespace App\Models\Client;
 
 use App\Models\Core\CoreModel;
-use App\Utils\Sql\ExtendedAttribute;
+use App\Utils\Sql\SqlAttribute;
 use App\Utils\Sql\SqlFn;
 use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -23,12 +23,11 @@ class Job extends CoreModel
 
     protected function displayName(): Attribute
     {
-        return ExtendedAttribute::make(
-            get: fn () => "$this->code $this->title"
-        )
-            ->withSql(
-                ['code', 'title'],
-                fn (SqlName $code, SqlName $title) => SqlFn::CONCAT($code, ': ', $title)
-            );
+        return SqlAttribute::new(
+            dependencies: ['code', 'title'],
+
+            get: fn () => "$this->code $this->title",
+            sql: fn (SqlName $code, SqlName $title) => SqlFn::CONCAT($code, ': ', $title)
+        );
     }
 }

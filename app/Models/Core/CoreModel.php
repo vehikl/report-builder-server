@@ -2,9 +2,9 @@
 
 namespace App\Models\Core;
 
-use App\Utils\Sql\ExtendedAttribute;
 use App\Utils\Sql\HasExtendedRelationships;
 use App\Utils\Sql\LeftJoinable;
+use App\Utils\Sql\SqlAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +20,7 @@ class CoreModel extends Model
         return in_array($key, Schema::getColumnListing($model->getTable()));
     }
 
-    public static function getSqlAttribute(Model $model, $name): ?ExtendedAttribute
+    public static function getSqlAttribute(Model $model, $name): ?SqlAttribute
     {
         if (! $model->hasAttributeMutator($name)) {
             return null;
@@ -28,7 +28,7 @@ class CoreModel extends Model
 
         $attribute = (new ReflectionClass($model))->getMethod(Str::camel($name))->invoke($model);
 
-        if (! is_a($attribute, ExtendedAttribute::class) || ! $attribute->hasSqlDefinition()) {
+        if (! is_a($attribute, SqlAttribute::class)) {
             return null;
         }
 

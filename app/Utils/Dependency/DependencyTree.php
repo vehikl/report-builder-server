@@ -3,7 +3,7 @@
 namespace App\Utils\Dependency;
 
 use App\Models\Core\CoreModel;
-use App\Utils\Sql\ExtendedAttribute;
+use App\Utils\Sql\SqlAttribute;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -13,7 +13,7 @@ class DependencyTree
     /** @var string[] */
     public array $columns = [];
 
-    /** @var array<string, ExtendedAttribute> */
+    /** @var array<string, SqlAttribute> */
     public array $attributes = [];
 
     /** @var array<string, DependencyRelation> */
