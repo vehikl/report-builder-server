@@ -20,6 +20,7 @@ abstract class Expression
             'binary' => new BinaryExpression($node['op'], self::make($node['left']), self::make($node['right'])),
             'call' => new CallExpression($node['fn'], ...self::makeMany($node['args'])),
             'field' => new FieldExpression($node['value']),
+            'group' => new GroupExpression(self::make($node['expression'])),
             'identifier' => new IdentifierExpression($node['value']),
             'number' => new NumberExpression($node['value']),
             'string' => new StringExpression($node['value']),

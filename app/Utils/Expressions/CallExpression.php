@@ -16,7 +16,6 @@ class CallExpression extends Expression
         $this->args = $args;
     }
 
-    /** @return string[] */
     public function getFieldPaths(): array
     {
         return array_merge(...array_map(

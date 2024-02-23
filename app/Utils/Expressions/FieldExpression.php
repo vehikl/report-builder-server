@@ -8,7 +8,6 @@ class FieldExpression extends Expression
     {
     }
 
-    /** @return string[] */
     public function getFieldPaths(): array
     {
         return [$this->path];
