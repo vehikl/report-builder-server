@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Benchmark;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -101,9 +102,19 @@ class Report extends Model
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
     public function spreadsheet(?array $sort): array
     {
+        [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
+        [$data, $dataDuration] = Benchmark::value(fn () => $query->get());
+        [$records, $recordsDuration] = Benchmark::value(fn () => $data->map(fn (object $record) => (array) $record));
+
+        logger(0, [
+            'query' => $queryDuration,
+            'data' => $dataDuration,
+            'records' => $recordsDuration,
+        ]);
+
         return [
             $this->columns->map(fn (Column $column) => $column->name)->toArray(),
-            ...$this->getQuery($sort)->get()->map(fn (object $record) => (array) $record),
+            ...$records,
         ];
     }
 }
