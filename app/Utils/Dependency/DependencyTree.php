@@ -23,19 +23,27 @@ class DependencyTree
     {
     }
 
-    /** @param  string[]  $paths */
-    public function merge(Model $model, array $paths): static
+    public function merge(DependencyTree $tree): self
     {
-
-        if ($model::class !== $this->model::class) {
-            throw new Exception('Models are different: '.$this->model::class.' !== '.$model::class);
+        if ($this->model::class !== $tree->model::class) {
+            throw new Exception('Models are different: '.$this->model::class.' !== '.$tree->model::class);
         }
-
-        $tree = self::make($model, $paths);
 
         $this->columns = array_unique(array_merge($this->columns, $tree->columns), SORT_REGULAR);
         $this->attributes = array_unique(array_merge($this->attributes, $tree->attributes), SORT_REGULAR);
-        $this->relations = array_unique(array_merge($this->relations, $tree->relations), SORT_REGULAR);
+
+        /** @var string[] $keys */
+        $keys = array_unique([...array_keys($this->relations), ...array_keys($tree->relations)]);
+
+        foreach ($keys as $key) {
+            $dependencyRelation = $this->relations[$key] ?? $tree->relations[$key];
+
+            if (isset($this->relations[$key]) && isset($tree->relations[$key])) {
+                $dependencyRelation->tree->merge($tree->relations[$key]->tree);
+            }
+
+            $this->relations[$key] = $dependencyRelation;
+        }
 
         return $this;
     }
@@ -67,7 +75,7 @@ class DependencyTree
                     if ($attribute = CoreModel::getSqlAttribute($currentTree->model, $key)) {
                         $currentTree->attributes[$key] = $attribute;
 
-                        $currentTree->merge($currentTree->model, $attribute->getDependencies());
+                        $currentTree->merge(self::make($currentTree->model, $attribute->getDependencies()));
 
                         continue;
                     }
@@ -86,12 +94,12 @@ class DependencyTree
                         ->groupBy(fn (string $value) => explode('.', $value)[0] === $key)
                         ->toArray();
 
-                    $currentTree->merge($tree->model, $currentDependencies);
+                    $currentTree->merge(self::make($tree->model, $currentDependencies));
 
-                    $relationTree->merge(
+                    $relationTree->merge(self::make(
                         $relation->getRelated(),
                         array_map(fn (string $path) => preg_replace('/^\w+\./', '', $path), $relationDependencies)
-                    );
+                    ));
 
                     $currentTree = $relationTree;
 
