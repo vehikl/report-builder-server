@@ -17,7 +17,7 @@ class Employee extends CoreModel
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'display_name',
         'salary',
         'bonus',
         'manager_id',
@@ -88,7 +88,7 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => "$this->name ({$this->job->code}: {$this->job->title})",
 
-            dependencies: ['name', 'job.code', 'job.title'],
+            dependencies: ['display_name', 'job.code', 'job.title'],
             sql: function (SqlContext $ctx, SqlName $name, SqlName $jobCode, SqlName $jobTitle) {
                 return $ctx->CONCAT($name, ' (', $jobCode, ': ', $jobTitle, ')');
             }
@@ -100,7 +100,7 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => "$this->name ({$this->job->display_name})",
 
-            dependencies: ['name', 'job.display_name'],
+            dependencies: ['display_name', 'job.display_name'],
             sql: function (SqlContext $ctx, SqlName $name, SqlName $jobDisplayName) {
                 return $ctx->CONCAT($name, ' ', '(', $jobDisplayName, ')');
             }

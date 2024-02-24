@@ -16,10 +16,10 @@ class ReportSeeder extends Seeder
                 'name' => 'Employees',
                 'entity_id' => 2,
                 'columns' => [
-                    ['name' => 'Name', 'position' => 0, 'expression' => new FieldExpression('name')],
+                    ['name' => 'Name', 'position' => 0, 'expression' => new FieldExpression('display_name')],
                     ['name' => 'Salary', 'position' => 1, 'expression' => new FieldExpression('salary')],
                     ['name' => 'Job', 'position' => 2, 'expression' => new FieldExpression('job.title')],
-                    ['name' => 'Manager', 'position' => 3, 'expression' => new FieldExpression('manager.name')],
+                    ['name' => 'Manager', 'position' => 3, 'expression' => new FieldExpression('manager.display_name')],
                     ['name' => 'Manager Job', 'position' => 4, 'expression' => new FieldExpression('manager.job.title')],
                     ['name' => 'Equity Rationale', 'position' => 5, 'expression' => new FieldExpression('equity.rationale')],
                 ],
@@ -28,8 +28,8 @@ class ReportSeeder extends Seeder
                 'name' => 'Employee Managers',
                 'entity_id' => 2,
                 'columns' => [
-                    ['name' => 'Name', 'position' => 0, 'expression' => new FieldExpression('name')],
-                    ['name' => 'Manager', 'position' => 1, 'expression' => new FieldExpression('manager.name')],
+                    ['name' => 'Name', 'position' => 0, 'expression' => new FieldExpression('display_name')],
+                    ['name' => 'Manager', 'position' => 1, 'expression' => new FieldExpression('manager.display_name')],
                 ],
             ],
         ];

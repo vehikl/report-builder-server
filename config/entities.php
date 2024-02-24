@@ -15,7 +15,7 @@ return [
         'name' => 'Employee',
         'fields' => [
             /*  4 */ ['identifier' => 'id', 'path' => 'id', 'name' => 'Id', 'type' => 'number'],
-            /*  5 */ ['identifier' => 'name', 'path' => 'name', 'name' => 'Name', 'type' => 'string'],
+            /*  5 */ ['identifier' => 'display_name', 'path' => 'display_name', 'name' => 'Name', 'type' => 'string'],
             /*  6 */ ['identifier' => 'salary', 'path' => 'salary', 'name' => 'Salary', 'type' => 'number'],
             /*  7 */ ['identifier' => 'bonus', 'path' => 'bonus', 'name' => 'Bonus', 'type' => 'number'],
             /*  8 */ ['identifier' => 'manager_id', 'path' => 'manager_id', 'name' => 'Manager Id', 'type' => 'number'],
