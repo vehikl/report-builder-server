@@ -5,6 +5,7 @@ namespace App\Models\Client;
 use App\Models\Core\CoreModel;
 use App\Utils\Relations\BelongsToList;
 use App\Utils\Relations\BelongsToListItem;
+use App\Utils\Relations\HasManyThroughList;
 use App\Utils\Relations\JoinableBelongsTo;
 use App\Utils\Sql\JoinContext;
 use App\Utils\Sql\SqlAttribute;
@@ -71,6 +72,11 @@ class Employee extends CoreModel
                 $ctx->join->on($eltId, '=', "$reportsTo->[$index]");
             }
         );
+    }
+
+    public function org(): HasManyThroughList
+    {
+        return $this->hasManyThroughList(Employee::class, 'reports_to');
     }
 
     public function job(): JoinableBelongsTo

@@ -51,4 +51,13 @@ trait HasExtendedRelationships
 
         return new BelongsToListItem($instance->newQuery(), $this, $listColumn, $itemIndex, $ownerKey, $relationName);
     }
+
+    public function hasManyThroughList(string $related, string $foreignList, $localKey = null): HasManyThroughList
+    {
+        $instance = $this->newRelatedInstance($related);
+
+        $localKey = $localKey ?: $this->getKeyName();
+
+        return new HasManyThroughList($instance->newQuery(), $this, $foreignList, $localKey);
+    }
 }
