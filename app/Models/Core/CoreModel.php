@@ -2,8 +2,8 @@
 
 namespace App\Models\Core;
 
-use App\Utils\Sql\HasExtendedRelationships;
-use App\Utils\Sql\Joinable;
+use App\Utils\Relations\HasExtendedRelationships;
+use App\Utils\Relations\Joinable;
 use App\Utils\Sql\SqlAttribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;

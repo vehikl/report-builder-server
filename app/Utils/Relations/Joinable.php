@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Utils\Sql;
+namespace App\Utils\Relations;
 
+use App\Utils\Sql\JoinContext;
+use App\Utils\Sql\SqlName;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\JoinClause;
 

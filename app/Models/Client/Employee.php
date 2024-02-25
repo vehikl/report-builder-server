@@ -3,7 +3,9 @@
 namespace App\Models\Client;
 
 use App\Models\Core\CoreModel;
-use App\Utils\Sql\ExtendedBelongsTo;
+use App\Utils\Relations\BelongsToList;
+use App\Utils\Relations\BelongsToListItem;
+use App\Utils\Relations\JoinableBelongsTo;
 use App\Utils\Sql\JoinContext;
 use App\Utils\Sql\SqlAttribute;
 use App\Utils\Sql\SqlContext;
@@ -24,9 +26,13 @@ class Employee extends CoreModel
         'job_code',
     ];
 
-    public function manager(): ExtendedBelongsTo
+    protected $casts = [
+        'reports_to' => 'array',
+    ];
+
+    public function manager(): JoinableBelongsTo
     {
-        $relation = $this->extendedBelongsTo(Employee::class, 'manager_id');
+        $relation = $this->joinableBelongsTo(Employee::class, 'manager_id');
 
         return $relation->withJoin(
             ['manager_id', 'manager.id'],
@@ -36,9 +42,40 @@ class Employee extends CoreModel
         );
     }
 
-    public function job(): ExtendedBelongsTo
+    public function managers(): BelongsToList
     {
-        $relation = $this->extendedBelongsTo(Job::class, 'job_code', 'code');
+        return $this->belongsToList(Employee::class, 'reports_to')->respectingListOrder();
+    }
+
+    public function elt(): BelongsToListItem
+    {
+        $index = 1;
+        $relation = $this->belongsToListItem(Employee::class, 'reports_to', $index);
+
+        return $relation->withJoin(
+            ['elt.id', 'reports_to'],
+            function (JoinContext $ctx, SqlName $eltId, SqlName $reportsTo) use ($index) {
+                $ctx->join->on($eltId, '=', "$reportsTo->[$index]");
+            }
+        );
+    }
+
+    public function eltPlus1(): BelongsToListItem
+    {
+        $index = 2;
+        $relation = $this->belongsToListItem(Employee::class, 'reports_to', $index);
+
+        return $relation->withJoin(
+            ['eltPlus1.id', 'reports_to'],
+            function (JoinContext $ctx, SqlName $eltId, SqlName $reportsTo) use ($index) {
+                $ctx->join->on($eltId, '=', "$reportsTo->[$index]");
+            }
+        );
+    }
+
+    public function job(): JoinableBelongsTo
+    {
+        $relation = $this->joinableBelongsTo(Job::class, 'job_code', 'code');
 
         return $relation->withJoin(
             ['job_code', 'job.code'],

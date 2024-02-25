@@ -2,9 +2,11 @@
 
 namespace App\Utils\Sql;
 
+use Illuminate\Contracts\Database\Query\Expression;
+use Illuminate\Database\Grammar;
 use Stringable;
 
-class SqlName implements Stringable
+class SqlName implements Expression, Stringable
 {
     public function __construct(private readonly string $name)
     {
@@ -18,5 +20,11 @@ class SqlName implements Stringable
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    /** @return string */
+    public function getValue(Grammar $grammar)
+    {
+        return $this->__toString();
     }
 }

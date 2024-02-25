@@ -2,7 +2,7 @@
 
 namespace App\Utils\Dependency;
 
-use App\Utils\Sql\Joinable;
+use App\Utils\Relations\Joinable;
 
 class DependencyRelation
 {

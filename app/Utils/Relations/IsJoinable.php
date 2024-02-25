@@ -1,29 +1,30 @@
 <?php
 
-namespace App\Utils\Sql;
+namespace App\Utils\Relations;
 
+use App\Utils\Sql\JoinContext;
+use App\Utils\Sql\SqlName;
 use Closure;
 use Exception;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ExtendedBelongsTo extends BelongsTo implements Joinable
+trait IsJoinable
 {
     /** @var string[] */
     protected array $dependencies = [];
 
-    protected ?Closure $leftJoinDefinition = null;
+    protected ?Closure $joinDefinition = null;
 
     public function withJoin(array $dependencies, callable $definition): static
     {
         $this->dependencies = $dependencies;
-        $this->leftJoinDefinition = $definition(...);
+        $this->joinDefinition = $definition(...);
 
         return $this;
     }
 
     public function hasJoin(): bool
     {
-        return $this->leftJoinDefinition !== null;
+        return $this->joinDefinition !== null;
     }
 
     public function getDependencies(): array
@@ -33,10 +34,10 @@ class ExtendedBelongsTo extends BelongsTo implements Joinable
 
     public function applyJoin(JoinContext $ctx, SqlName ...$dependencies): void
     {
-        $leftJoinExtension = $this->leftJoinDefinition;
+        $leftJoinExtension = $this->joinDefinition;
 
         if ($leftJoinExtension === null) {
-            throw new Exception('The left join definition is not set. Use `withLeftJoin`');
+            throw new Exception('The join definition is not set. Use `withJoin`');
         }
 
         $leftJoinExtension($ctx, ...$dependencies);
