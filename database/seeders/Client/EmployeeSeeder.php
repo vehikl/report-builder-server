@@ -26,6 +26,6 @@ class EmployeeSeeder extends Seeder
         )
             ->create();
 
-        Employee::factory()->count(20000)->create(['manager_id' => Employee::factory()]);
+        Employee::factory()->count(100)->create(['manager_id' => Employee::factory()]);
     }
 }
