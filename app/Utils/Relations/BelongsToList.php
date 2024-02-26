@@ -11,7 +11,7 @@ class BelongsToList extends Relation
 {
     protected bool $respectsListOrder = false;
 
-    public function __construct(Builder $query, protected Model $child, protected string $listColumn, protected string $ownerKey, protected string $relationName)
+    public function __construct(Builder $query, protected Model $child, protected string $foreignKeyList, protected string $relatedKey)
     {
         parent::__construct($query, $child);
     }
@@ -20,48 +20,70 @@ class BelongsToList extends Relation
     {
         if (static::$constraints) {
             $table = $this->related->getTable();
-            $list = $this->child->{$this->listColumn};
+            $list = $this->child->{$this->foreignKeyList};
 
-            $this->query->whereIn($table.'.'.$this->ownerKey, $list);
+            $this->query->whereIn($table.'.'.$this->relatedKey, $list);
         }
     }
 
     public function addEagerConstraints(array $models)
     {
-        // TODO: Implement addEagerConstraints() method.
+        $relatedKey = $this->related->getTable().'.'.$this->relatedKey;
+
+        $whereIn = $this->whereInMethod($this->related, $this->relatedKey);
+
+        $this->whereInEager($whereIn, $relatedKey, $this->getEagerModelKeys($models));
+    }
+
+    protected function getEagerModelKeys(array $models): array
+    {
+        $foreignKeys = [];
+
+        foreach ($models as $model) {
+            if (! is_null($values = $model->{$this->foreignKeyList})) {
+                $foreignKeys = array_merge($foreignKeys, $values);
+            }
+        }
+
+        sort($foreignKeys);
+
+        return array_values(array_unique($foreignKeys));
     }
 
     public function initRelation(array $models, $relation)
     {
-        // TODO: Implement initRelation() method.
+        foreach ($models as $model) {
+            $model->setRelation($relation, $this->related->newCollection());
+        }
+
+        return $models;
     }
 
     public function match(array $models, Collection $results, $relation)
     {
-        // TODO: Implement match() method.
-    }
+        foreach ($models as $model) {
+            $foreignKeys = $model->getAttribute($this->foreignKeyList) ?? [];
 
-    protected function newRelatedInstanceFor(Model $parent)
-    {
-        // TODO: Implement newRelatedInstanceFor() method.
+            $matches = $results->filter(fn ($result) => in_array($result->{$this->relatedKey}, $foreignKeys));
+
+            $model->setRelation($relation, $matches);
+        }
+
+        return $models;
     }
 
     public function getResults(): Collection
     {
-        $list = $this->child->{$this->listColumn};
+        $list = $this->child->{$this->foreignKeyList};
 
         if (is_null($list)) {
             return $this->related->newCollection();
         }
 
-        if (! is_array($list)) {
-            $list = json_decode($list);
-        }
-
         $results = $this->get();
 
         if ($this->respectsListOrder) {
-            $results = $results->sortBy(fn (Model $value) => array_search($value->{$this->ownerKey}, $list));
+            $results = $results->sortBy(fn (Model $value) => array_search($value->{$this->relatedKey}, $list));
         }
 
         return $results;

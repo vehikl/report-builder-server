@@ -26,17 +26,13 @@ trait HasExtendedRelationships
         return new JoinableBelongsTo($instance->newQuery(), $this, $foreignKey, $ownerKey, $relation);
     }
 
-    public function belongsToList(string $related, string $listColumn, ?string $ownerKey = null, ?string $relationName = null): BelongsToList
+    public function belongsToList(string $related, string $foreignKeyList, ?string $relatedKey = null): BelongsToList
     {
-        if (is_null($relationName)) {
-            $relationName = $this->guessBelongsToRelation();
-        }
-
         $instance = $this->newRelatedInstance($related);
 
-        $ownerKey = $ownerKey ?: $instance->getKeyName();
+        $relatedKey = $relatedKey ?: $instance->getKeyName();
 
-        return new BelongsToList($instance->newQuery(), $this, $listColumn, $ownerKey, $relationName);
+        return new BelongsToList($instance->newQuery(), $this, $foreignKeyList, $relatedKey);
     }
 
     public function belongsToListItem(string $related, string $listColumn, int $itemIndex, ?string $ownerKey = null, ?string $relationName = null): BelongsToListItem
