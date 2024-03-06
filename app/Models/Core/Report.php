@@ -4,7 +4,7 @@ namespace App\Models\Core;
 
 use App\Utils\Dependency\DependencyTree;
 use App\Utils\Expressions\ExpressionContext;
-use App\Utils\Path;
+use App\Utils\PathResolver;
 use App\Utils\QueryMaker;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,7 +50,7 @@ class Report extends Model
     {
         return Collection::make($this->getDataPaths())
             ->mapWithKeys(function (string $dataPath, string $fieldPath) {
-                $sqlName = (new Path($this->entity->getModel(), null))->field($dataPath);
+                $sqlName = (new PathResolver($this->entity->getModel(), null))->field($dataPath);
 
                 return [$fieldPath => $sqlName];
             })
@@ -64,7 +64,7 @@ class Report extends Model
 
         $dependencyTree = DependencyTree::make($this->entity->getModel(), $this->getDataPaths());
 
-        $query = QueryMaker::make($dependencyTree, new Path($model, null));
+        $query = QueryMaker::make($dependencyTree, new PathResolver($model, null));
 
         $context = ExpressionContext::make($this->getSqlNames());
 

@@ -7,7 +7,7 @@ use App\Utils\Sql\SqlName;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 
-class Path
+class PathResolver
 {
     public function __construct(private readonly Model $model, private readonly ?string $basePath)
     {
@@ -71,6 +71,6 @@ class Path
 
         $appendedBasePath = $this->basePath === null ? $key : "{$this->basePath}__$key";
 
-        return new Path($relation->getRelated(), $appendedBasePath);
+        return new PathResolver($relation->getRelated(), $appendedBasePath);
     }
 }
