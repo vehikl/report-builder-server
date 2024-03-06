@@ -53,16 +53,4 @@ class Job extends CoreModel
             sql: fn (SqlContext $ctx, SqlName $pay_rate_type) => "$pay_rate_type = {$ctx->val(PayRateType::Salary->value)}"
         );
     }
-
-    // -----------------------------------------
-
-    protected function displayName(): Attribute
-    {
-        return SqlAttribute::new(
-            dependencies: ['code', 'title'],
-
-            get: fn () => "$this->code $this->title",
-            sql: fn (SqlContext $ctx, SqlName $code, SqlName $title) => $ctx->CONCAT($code, ': ', $title)
-        );
-    }
 }

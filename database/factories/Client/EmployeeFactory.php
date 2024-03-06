@@ -53,7 +53,6 @@ class EmployeeFactory extends Factory
             'job_code' => fn () => Job::factory(),
             'promo_job_code' => fn () => Job::factory(),
             'new_job_code' => fn () => Job::factory(),
-            'bonus' => fake()->randomFloat(2, 10000, 20000),
             'equity_amount' => fake()->randomFloat(2, 10000, 50000),
             'equity_rationale' => fake()->sentence(4),
         ];

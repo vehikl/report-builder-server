@@ -39,7 +39,6 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->decimal('bonus', 9);
             $table->decimal('equity_amount', 9)->nullable();
             $table->string('equity_rationale')->nullable();
         });
