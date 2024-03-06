@@ -48,6 +48,16 @@ class DependencyTree
         return $this;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'columns' => $this->columns,
+            'attributes' => array_keys($this->attributes),
+            'relations' => collect($this->relations)
+                ->mapWithKeys(fn (DependencyRelation $relation, $key) => [$key, $relation->tree->toArray()]),
+        ];
+    }
+
     /** @param  string[]  $paths */
     public static function make(Model $model, array $paths): self
     {

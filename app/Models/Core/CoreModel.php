@@ -20,7 +20,7 @@ class CoreModel extends Model
         return in_array($key, Schema::getColumnListing($model->getTable()));
     }
 
-    public static function getSqlAttribute(Model $model, $name): ?SqlAttribute
+    public static function getSqlAttribute(Model $model, string $name): ?SqlAttribute
     {
         if (! $model->hasAttributeMutator($name)) {
             return null;

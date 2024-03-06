@@ -29,6 +29,7 @@ class EmployeeFactory extends Factory
         $hireDate = fake()->dateTimeThisDecade();
         $status = Arr::random(EmployeeStatus::cases());
         $terminationDate = $status === EmployeeStatus::Terminated ? $hireDate->add(new DateInterval('P1M')) : null;
+        $countryCode = fake()->countryCode();
 
         return [
             'display_name' => fake()->name(),
@@ -42,7 +43,10 @@ class EmployeeFactory extends Factory
             'algo_salary' => fake()->randomFloat(2, 70000, 150000),
             'new_salary' => fake()->randomFloat(2, 70000, 150000),
             'location' => fake()->country(),
-            'country' => fake()->countryCode().' '.fake()->city(),
+            'city_tier' => $countryCode.' '.fake()->numberBetween(1000, 9999),
+            'region' => $countryCode.' '.'Region',
+            'country' => $countryCode,
+            'country_city' => $countryCode.' '.fake()->city(),
             'currency_code' => fn () => Currency::factory(),
             'reports_to' => [],
             'manager_id' => null,

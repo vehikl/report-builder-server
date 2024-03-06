@@ -2,10 +2,12 @@
 
 namespace App\Utils;
 
+use App\Models\Core\CoreModel;
 use App\Utils\Dependency\DependencyTree;
 use App\Utils\Sql\JoinContext;
 use App\Utils\Sql\SqlAttribute;
 use App\Utils\Sql\SqlContext;
+use App\Utils\Sql\SqlName;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
@@ -17,8 +19,10 @@ class QueryMaker
     {
         $columnSelects = array_map(fn (string $column) => "$column as {$path->field($column)}", $tree->columns);
 
-        $attributeSelects = Arr::map($tree->attributes, function (SqlAttribute $attribute, string $attributeName) use ($path) {
-            $dependencies = $path->fields($attribute->getDependencies());
+        $attributeSelects = Arr::map($tree->attributes, function (SqlAttribute $attribute, string $attributeName) use ($tree, $path) {
+            $dependencies = collect($path->fields($attribute->getDependencies()))
+                // TODO: extract this logic
+                ->map(fn (SqlName $value) => str_contains('__', $value) || ! ($depAttribute = CoreModel::getSqlAttribute($tree->model, $value->__toString())) ? $value : SqlName::make("({$depAttribute->toSql(new SqlContext(), ...$path->fields($depAttribute->getDependencies()))})"));
 
             return DB::raw("{$attribute->toSql(new SqlContext(), ...$dependencies)} as {$path->field($attributeName)}");
         });

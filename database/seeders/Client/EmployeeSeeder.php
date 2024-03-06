@@ -35,7 +35,7 @@ class EmployeeSeeder extends Seeder
                 ],
             )->create();
 
-        Employee::factory()->count(100)
+        Employee::factory()->count(20000)
             ->sequence(...$currencies->map(fn (Currency $currency) => ['currency_code' => $currency])->all())
             ->create([
                 'manager_id' => Employee::factory()->for($currencies->random()),

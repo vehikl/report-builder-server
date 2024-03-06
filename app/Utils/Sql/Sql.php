@@ -63,7 +63,7 @@ class Sql
     {
         $arrayArg = is_array($array) ? implode(',', $array) : $array;
 
-        return $this->arrayContains($arrayArg, $value);
+        return $this->FIND_IN_SET($value, $arrayArg);
     }
 
     public function jsonArrayContains(mixed $array, mixed $value): SqlName

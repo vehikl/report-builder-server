@@ -113,7 +113,7 @@ class Employee extends CoreModel
 
     public function currency(): JoinableBelongsTo
     {
-        $relation = $this->joinableBelongsTo(Job::class, 'currency_code', 'code');
+        $relation = $this->joinableBelongsTo(Currency::class, 'currency_code', 'code');
 
         return $relation->withJoin(
             ['currency_code', 'currency.code'],
@@ -254,7 +254,7 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => $this->salary * $this->fx_to_usd,
 
-            dependencies: ['salary', 'fx_to_usd'],
+            dependencies: ['salary', 'currency.fx_to_usd'],
             sql: fn (SqlContext $ctx, SqlName $salary, SqlName $fx_to_usd) => "$salary * $fx_to_usd"
         );
     }
@@ -264,7 +264,7 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => $this->algo_salary * $this->fx_to_usd,
 
-            dependencies: ['algo_salary', 'fx_to_usd'],
+            dependencies: ['algo_salary', 'currency.fx_to_usd'],
             sql: fn (SqlContext $ctx, SqlName $algo_salary, SqlName $fx_to_usd) => "$algo_salary * $fx_to_usd"
         );
     }
@@ -274,7 +274,7 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => $this->salary * $this->fx_to_usd,
 
-            dependencies: ['new_salary', 'fx_to_usd'],
+            dependencies: ['new_salary', 'currency.fx_to_usd'],
             sql: fn (SqlContext $ctx, SqlName $new_salary, SqlName $fx_to_usd) => "$new_salary * $fx_to_usd"
         );
     }
@@ -294,7 +294,7 @@ class Employee extends CoreModel
         return SqlAttribute::new(
             get: fn () => $this->salary_increase_amount * $this->fx_to_usd,
 
-            dependencies: ['salary_increase_amount', 'fx_to_usd'],
+            dependencies: ['salary_increase_amount', 'currency.fx_to_usd'],
             sql: fn (SqlContext $ctx, SqlName $salary_increase_amount, SqlName $fx_to_usd) => "$salary_increase_amount * $fx_to_usd"
         );
     }

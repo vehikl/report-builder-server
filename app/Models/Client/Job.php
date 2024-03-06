@@ -40,7 +40,7 @@ class Job extends CoreModel
             get: fn () => $this->pay_rate_type === PayRateType::Hourly,
 
             dependencies: ['pay_rate_type'],
-            sql: fn (SqlContext $ctx, SqlName $pay_rate_type) => "$pay_rate_type = ".PayRateType::Hourly->value
+            sql: fn (SqlContext $ctx, SqlName $pay_rate_type) => "$pay_rate_type = {$ctx->val(PayRateType::Hourly->value)}"
         );
     }
 
@@ -50,7 +50,7 @@ class Job extends CoreModel
             get: fn () => $this->pay_rate_type === PayRateType::Salary,
 
             dependencies: ['pay_rate_type'],
-            sql: fn (SqlContext $ctx, SqlName $pay_rate_type) => "$pay_rate_type = ".PayRateType::Salary->value
+            sql: fn (SqlContext $ctx, SqlName $pay_rate_type) => "$pay_rate_type = {$ctx->val(PayRateType::Salary->value)}"
         );
     }
 

@@ -23,6 +23,9 @@ return new class extends Migration
             $table->decimal('new_salary', 9);
 
             $table->string('location');
+            $table->string('city_tier');
+            $table->string('region');
+            $table->string('country_city');
             $table->string('country');
 
             $table->string('currency_code')->references('code')->on('currencies');
