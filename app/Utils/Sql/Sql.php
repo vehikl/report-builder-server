@@ -34,18 +34,45 @@ class Sql
         return SqlName::make("$name($args)");
     }
 
+    public function not(mixed $value): SqlName
+    {
+        return SqlName::make("NOT {$this->val($value)}");
+    }
+
+    public function notNull(mixed $value): SqlName
+    {
+        return SqlName::make("NOT {$this->ISNULL($value)}");
+    }
+
     public function cast(mixed $value, string $type): SqlName
     {
         return SqlName::make("CAST({$this->val($value)} as $type)");
     }
 
-    public function arrayContains(mixed $list, mixed $value): SqlName
+    public function true(): SqlName
     {
-        return $this->JSON_CONTAINS($list, $this->cast($value, 'JSON'));
+        return SqlName::make('TRUE');
     }
 
-    public function arrayGet(mixed $list, int $index): SqlName
+    public function false(): SqlName
     {
-        return $this->JSON_EXTRACT($list, "$[$index]");
+        return SqlName::make('FALSE');
+    }
+
+    public function arrayContains(mixed $array, mixed $value): SqlName
+    {
+        $arrayArg = is_array($array) ? implode(',', $array) : $array;
+
+        return $this->arrayContains($arrayArg, $value);
+    }
+
+    public function jsonArrayContains(mixed $array, mixed $value): SqlName
+    {
+        return $this->JSON_CONTAINS($array, $this->cast($value, 'JSON'));
+    }
+
+    public function jsonArrayGet(mixed $array, int $index): SqlName
+    {
+        return $this->JSON_EXTRACT($array, "$[$index]");
     }
 }

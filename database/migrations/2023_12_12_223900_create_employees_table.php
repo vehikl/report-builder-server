@@ -12,16 +12,33 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('display_name');
+            $table->string('email');
+            $table->date('hire_date');
+            $table->string('company_full');
+            $table->date('termination_date')->nullable();
+            $table->enum('status', ['Active', 'Contractor', 'On Leave', 'Terminated']);
+            $table->enum('role_type', ['Core', 'Eng', 'S Ladder']);
             $table->decimal('salary', 9);
-            $table->decimal('bonus', 9);
-            $table->foreignId('job_code')->constrained('jobs', 'code');
-            $table->foreignId('manager_id')->nullable()->constrained('employees');
-            $table->json('reports_to')->default(DB::raw('(JSON_ARRAY())'));
+            $table->decimal('algo_salary', 9);
+            $table->decimal('new_salary', 9);
 
-            $table->decimal('equity_amount', 9)->nullable();
-            $table->string('equity_rationale')->nullable();
+            $table->string('location');
+            $table->string('country');
+
+            $table->string('currency_code')->references('code')->on('currencies');
+
+            $table->json('reports_to')->default(DB::raw('(JSON_ARRAY())'));
+            $table->foreignId('manager_id')->nullable()->constrained('employees');
+
+            $table->foreignId('job_code')->constrained('jobs', 'code');
+            $table->foreignId('promo_job_code')->nullable()->constrained('jobs', 'code');
+            $table->foreignId('new_job_code')->nullable()->constrained('jobs', 'code');
 
             $table->timestamps();
+
+            $table->decimal('bonus', 9);
+            $table->decimal('equity_amount', 9)->nullable();
+            $table->string('equity_rationale')->nullable();
         });
     }
 

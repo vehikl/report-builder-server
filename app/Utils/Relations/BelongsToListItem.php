@@ -14,10 +14,10 @@ class BelongsToListItem extends Relation implements Joinable
     use SupportsDefaultModels;
 
     public function __construct(
-        Builder          $query,
-        protected Model  $child,
+        Builder $query,
+        protected Model $child,
         protected string $foreignKeyList,
-        protected int    $itemIndex,
+        protected int $itemIndex,
         protected string $relatedKey
     ) {
         parent::__construct($query, $child);

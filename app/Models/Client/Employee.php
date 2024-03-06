@@ -2,6 +2,8 @@
 
 namespace App\Models\Client;
 
+use App\Models\Client\Enums\EmployeeProgram;
+use App\Models\Client\Enums\EmployeeStatus;
 use App\Models\Core\CoreModel;
 use App\Utils\Relations\BelongsToList;
 use App\Utils\Relations\BelongsToListItem;
@@ -21,14 +23,32 @@ class Employee extends CoreModel
 
     protected $fillable = [
         'display_name',
+        'email',
+        'hire_date',
+        'company_full',
+        'termination_date',
+        'status',
+        'role_type',
         'salary',
-        'bonus',
+        'algo_salary',
+        'new_salary',
+        'location',
+        'country',
+        'currency_code',
+        'reports_to',
         'manager_id',
         'job_code',
+        'promo_job_code',
+        'new_job_code',
+        'bonus',
+        'equity_amount',
+        'equity_rationale',
     ];
 
     protected $casts = [
         'reports_to' => 'array',
+        'role_type' => EmployeeProgram::class,
+        'status' => EmployeeStatus::class,
     ];
 
     public function manager(): JoinableBelongsTo
@@ -91,9 +111,214 @@ class Employee extends CoreModel
         );
     }
 
+    public function currency(): JoinableBelongsTo
+    {
+        $relation = $this->joinableBelongsTo(Job::class, 'currency_code', 'code');
+
+        return $relation->withJoin(
+            ['currency_code', 'currency.code'],
+            function (JoinContext $ctx, SqlName $employeeCurrencyCode, SqlName $currencyCode) {
+                $ctx->join->on($employeeCurrencyCode, '=', $currencyCode);
+            }
+        );
+    }
+
+    public function promoJob(): JoinableBelongsTo
+    {
+        $relation = $this->joinableBelongsTo(Job::class, 'promo_job_code', 'code');
+
+        return $relation->withJoin(
+            ['promo_job_code', 'promoJob.code'],
+            function (JoinContext $ctx, SqlName $employeePromoJobCode, SqlName $promoJobCode) {
+                $ctx->join->on($employeePromoJobCode, '=', $promoJobCode);
+            }
+        );
+    }
+
+    public function newJob(): JoinableBelongsTo
+    {
+        $relation = $this->joinableBelongsTo(Job::class, 'new_job_code', 'code');
+
+        return $relation->withJoin(
+            ['new_job_code', 'newJob.code'],
+            function (JoinContext $ctx, SqlName $employeePromoJobCode, SqlName $promoJobCode) {
+                $ctx->join->on($employeePromoJobCode, '=', $promoJobCode);
+            }
+        );
+    }
+
     public function subordinates(): HasMany
     {
         return $this->hasMany(Employee::class, 'manager_id');
+    }
+
+    protected function isSundeep(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->id === 999,
+
+            dependencies: ['id'],
+            sql: fn (SqlContext $ctx, SqlName $id) => "$id = 999"
+        );
+    }
+
+    protected function program(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->elt->is_sundepp ? EmployeeProgram::Eng : $this->role_type,
+
+            dependencies: ['role_type', 'elt.is_sundeep'],
+            sql: fn (SqlContext $ctx, SqlName $role_type, SqlName $is_sundeep) => $ctx->IF(
+                $is_sundeep,
+                EmployeeProgram::Eng->value,
+                $role_type
+            )
+        );
+    }
+
+    protected function isTermed(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->termination_date !== null,
+
+            dependencies: ['termination_date'],
+            sql: fn (SqlContext $ctx, SqlName $termination_date) => $ctx->notNull($termination_date)
+        );
+    }
+
+    protected function isOnLeave(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->status === EmployeeStatus::OnLeave,
+
+            dependencies: ['status'],
+            sql: fn (SqlContext $ctx, SqlName $status) => "$status = ".EmployeeStatus::OnLeave->value
+        );
+    }
+
+    protected function hasPromotion(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->promo_job_code !== null,
+
+            dependencies: ['promo_job_code'],
+            sql: fn (SqlContext $ctx, SqlName $promo_job_code) => $ctx->notNull($promo_job_code)
+        );
+    }
+
+    protected function canHaveHourlyJob(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => in_array(substr($this->location, 0, 3), ['USA', 'CAN']),
+
+            dependencies: ['location'],
+            sql: fn (SqlContext $ctx, SqlName $location) => $ctx->arrayContains(
+                ['USA', 'CAN'],
+                $ctx->SUBSTRING($location, 0, 3)
+            )
+        );
+    }
+
+    protected function isPromoHourlyToSalary(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->can_have_hourly_job && $this->job->is_hourly && $this->promoJob?->is_salary,
+
+            dependencies: ['can_have_hourly_job', 'job.is_hourly', 'promoJob.is_salary'],
+            sql: fn (
+                SqlContext $ctx,
+                SqlName $can_have_hourly_job,
+                SqlName $job_is_hourly,
+                SqlName $promoJob_is_salary
+            ) => "$can_have_hourly_job AND $job_is_hourly AND $promoJob_is_salary"
+        );
+    }
+
+    protected function isPromoSalaryToHourly(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->can_have_hourly_job && $this->job->is_salary && $this->promoJob->is_hourly,
+
+            dependencies: ['can_have_hourly_job', 'job.is_salary', 'promoJob.is_hourly'],
+            sql: fn (
+                SqlContext $ctx,
+                SqlName $can_have_hourly_job,
+                SqlName $job_is_salary,
+                SqlName $promoJob_is_hourly
+            ) => "$can_have_hourly_job AND $job_is_salary AND $promoJob_is_hourly"
+        );
+    }
+
+    protected function salaryUsd(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->salary * $this->fx_to_usd,
+
+            dependencies: ['salary', 'fx_to_usd'],
+            sql: fn (SqlContext $ctx, SqlName $salary, SqlName $fx_to_usd) => "$salary * $fx_to_usd"
+        );
+    }
+
+    protected function algoSalaryUsd(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->algo_salary * $this->fx_to_usd,
+
+            dependencies: ['algo_salary', 'fx_to_usd'],
+            sql: fn (SqlContext $ctx, SqlName $algo_salary, SqlName $fx_to_usd) => "$algo_salary * $fx_to_usd"
+        );
+    }
+
+    protected function newSalaryUsd(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->salary * $this->fx_to_usd,
+
+            dependencies: ['new_salary', 'fx_to_usd'],
+            sql: fn (SqlContext $ctx, SqlName $new_salary, SqlName $fx_to_usd) => "$new_salary * $fx_to_usd"
+        );
+    }
+
+    protected function salaryIncreaseAmount(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->new_salary - $this->salary,
+
+            dependencies: ['salary', 'new_salary'],
+            sql: fn (SqlContext $ctx, SqlName $salary, SqlName $new_salary) => "$new_salary - $salary"
+        );
+    }
+
+    protected function salaryIncreaseAmountUsd(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->salary_increase_amount * $this->fx_to_usd,
+
+            dependencies: ['salary_increase_amount', 'fx_to_usd'],
+            sql: fn (SqlContext $ctx, SqlName $salary_increase_amount, SqlName $fx_to_usd) => "$salary_increase_amount * $fx_to_usd"
+        );
+    }
+
+    protected function salaryIncreasePercent(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->salary_increase_amount / $this->salary,
+
+            dependencies: ['salary_increase_amount', 'salary'],
+            sql: fn (SqlContext $ctx, SqlName $salary_increase_amount, SqlName $salary) => "$salary_increase_amount / $salary"
+        );
+    }
+
+    // -----------------------------------------
+
+    protected function nameWithStatus(): Attribute
+    {
+        return SqlAttribute::new(
+            get: fn () => $this->salary + $this->bonus,
+
+            dependencies: ['salary', 'bonus'],
+            sql: fn (SqlContext $ctx, SqlName $salary, SqlName $bonus) => "$salary + $bonus"
+        );
     }
 
     protected function totalCompensation(): Attribute
