@@ -14,16 +14,19 @@ class DownloadReport extends Controller
     public function __invoke(PreviewReportRequest $request): Response
     {
         $writer = new XLSXWriter();
+
         $data = $request->report()->spreadsheet($request->input('sort'));
+
         $writeDuration = Benchmark::measure(function () use ($request, $writer, $data) {
             $writer->writeSheet($data, $request->report()->name);
         });
 
         [$contents, $contentsDuration] = Benchmark::value(fn () => $writer->writeToString());
 
-        logger(1, [
+        logger('spreadsheet', [
             'write' => $writeDuration,
-            'contents' => $contentsDuration,
+            'read' => $contentsDuration,
+            'total' => $writeDuration + $contentsDuration,
         ]);
 
         $fileName = $request->report()->name.' '.Carbon::now()->format('Y-m-d H:i:s').'.xlsx';

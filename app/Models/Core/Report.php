@@ -84,7 +84,15 @@ class Report extends Model
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
     public function preview(?array $sort): array
     {
-        $query = $this->getQuery($sort);
+        [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
+        [$pagination, $paginationDuration] = Benchmark::value(fn () => $query->paginate(40));
+
+        logger('-------');
+        logger('preview_data', [
+            'query_build' => $queryDuration,
+            'pagination' => $paginationDuration,
+            'total' => $queryDuration + $paginationDuration,
+        ]);
 
         return [
             'name' => $this->name,
@@ -94,7 +102,7 @@ class Report extends Model
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
             ]),
-            'records' => $query->paginate(40),
+            'records' => $pagination,
             'sort' => $sort,
         ];
     }
@@ -104,17 +112,17 @@ class Report extends Model
     {
         [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
         [$data, $dataDuration] = Benchmark::value(fn () => $query->get());
-        [$records, $recordsDuration] = Benchmark::value(fn () => $data->map(fn (object $record) => (array) $record));
 
-        logger(0, [
-            'query' => $queryDuration,
-            'data' => $dataDuration,
-            'records' => $recordsDuration,
+        logger('-------');
+        logger('spreadsheet_data', [
+            'query_build' => $queryDuration,
+            'query_execution' => $dataDuration,
+            'total' => $queryDuration + $dataDuration,
         ]);
 
         return [
             $this->columns->map(fn (Column $column) => $column->name)->toArray(),
-            ...$records,
+            ...$data->map(fn (object $record) => (array) $record),
         ];
     }
 }

@@ -15,9 +15,17 @@ class CoreModel extends Model
 {
     use HasExtendedRelationships;
 
+    private static array $tableColumns = [];
+
     public static function isColumn(Model $model, string $key): bool
     {
-        return in_array($key, Schema::getColumnListing($model->getTable()));
+        $table = $model->getTable();
+
+        if (! isset(self::$tableColumns[$table])) {
+            self::$tableColumns[$table] = Schema::getColumnListing($table);
+        }
+
+        return in_array($key, self::$tableColumns[$table]);
     }
 
     public static function getSqlAttribute(Model $model, string $name): ?SqlAttribute
