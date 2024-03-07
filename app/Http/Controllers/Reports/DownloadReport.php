@@ -23,7 +23,7 @@ class DownloadReport extends Controller
 
         [$contents, $contentsDuration] = Benchmark::value(fn () => $writer->writeToString());
 
-        logger('spreadsheet', [
+        logger('spreadsheet_build', [
             'write' => $writeDuration,
             'read' => $contentsDuration,
             'total' => $writeDuration + $contentsDuration,

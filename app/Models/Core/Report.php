@@ -90,7 +90,7 @@ class Report extends Model
         logger('-------');
         logger('preview_data', [
             'query_build' => $queryDuration,
-            'pagination' => $paginationDuration,
+            'query_pagination_exec' => $paginationDuration,
             'total' => $queryDuration + $paginationDuration,
         ]);
 
@@ -116,7 +116,7 @@ class Report extends Model
         logger('-------');
         logger('spreadsheet_data', [
             'query_build' => $queryDuration,
-            'query_execution' => $dataDuration,
+            'query_exec' => $dataDuration,
             'total' => $queryDuration + $dataDuration,
         ]);
 
