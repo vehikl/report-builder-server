@@ -4,8 +4,8 @@ namespace Database\Seeders\Client;
 
 use App\Models\Client\Currency;
 use App\Models\Client\Employee;
-use App\Models\Client\Job;
 use Illuminate\Console\OutputStyle;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -14,47 +14,52 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
-        $employeeCount = 20000;
-
         $currencies = Currency::factory()->count(3)->sequence(
             ['code' => 'USD', 'fx_to_usd' => 1.0, 'fx_from_usd' => 1.0],
             ['code' => 'CAD', 'fx_to_usd' => 0.8, 'fx_from_usd' => 0.2],
             ['code' => 'BRL', 'fx_to_usd' => 0.2, 'fx_from_usd' => 0.8],
         )->create();
 
-        $managerJob = Job::factory()->create(['title' => 'Manager']);
+        $this->createEmployees($currencies, 30000);
+    }
 
-        $managers = Employee::factory()
-            ->count(2)
-            ->for($currencies->random())
-            ->create(['job_code' => $managerJob]);
+    /** @param  Collection<Currency>  $currencies */
+    public function createEmployees(Collection $currencies, int $total): void
+    {
 
-        Employee::factory()->count(4)
-            ->for($currencies->random())
-            ->sequence(
-                ['manager_id' => $managers->get(0)],
-                [
-                    'manager_id' => $managers->get(1),
-                    'equity_amount' => null,
-                    'equity_rationale' => null,
-                ],
-            )->create();
+        $managers = [Employee::factory()->for($currencies->random())->create()];
+        $count = 1;
+        $tier = 2;
 
         $output = new OutputStyle(new StringInput(''), new ConsoleOutput());
+        $bar = $output->createProgressBar($total);
+        $bar->advance();
 
-        $bar = $output->createProgressBar($employeeCount);
+        while (true) {
+            $employees = [];
+            foreach ($managers as $manager) {
+                for ($i = 0; $i < $tier; $i++) {
+                    $employee = Employee::factory()
+                        ->for($currencies->random())
+                        ->create([
+                            'manager_id' => $manager,
+                            'reports_to' => [$manager->id, ...$manager->reports_to],
+                        ]);
 
-        for ($j = 0; $j < $employeeCount; $j++) {
-            Employee::factory()
-                ->for($currencies->random())
-                ->create([
-                    'manager_id' => Employee::factory()->for($currencies->random()),
-                ]);
+                    $employees[] = $employee;
 
-            $bar->advance();
+                    $bar->advance();
+
+                    if ($count++ >= $total) {
+                        $bar->finish();
+                        $output->writeln('');
+
+                        return;
+                    }
+                }
+            }
+            $managers = $employees;
+            $tier++;
         }
-
-        $bar->finish();
-        $output->writeln('');
     }
 }

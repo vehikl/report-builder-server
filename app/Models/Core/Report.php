@@ -62,15 +62,25 @@ class Report extends Model
     {
         $model = new ($this->entity->getModelClass());
 
-        $dependencyTree = DependencyTree::make($this->entity->getModel(), $this->getDataPaths());
+        [$dependencyTree, $dependencyTreeDuration] = Benchmark::value(fn () => DependencyTree::make($this->entity->getModel(), $this->getDataPaths()));
 
-        $query = QueryMaker::make($dependencyTree, new PathResolver($model, null));
+        [$query, $queryDuration] = Benchmark::value(fn () => QueryMaker::make($dependencyTree, new PathResolver($model, null)));
 
-        $context = ExpressionContext::make($this->getSqlNames());
+        [$context, $contextDuration] = Benchmark::value(fn () => ExpressionContext::make($this->getSqlNames()));
 
-        $selects = $this->columns
-            ->map(fn (Column $column) => DB::raw($column->getSelect($context)))
-            ->toArray();
+        [$selects, $selectsDuration] = Benchmark::value(
+            fn () => $this->columns
+                ->map(fn (Column $column) => DB::raw($column->getSelect($context)))
+                ->toArray()
+        );
+
+        logger('Report::getQuery', [
+            'dependencyTree' => $dependencyTreeDuration,
+            'query' => $queryDuration,
+            'context' => $contextDuration,
+            'selects' => $selectsDuration,
+            'total' => $dependencyTreeDuration + $queryDuration + $contextDuration + $selectsDuration,
+        ]);
 
         return DB::query()
             ->from($query, $this->name)
@@ -84,14 +94,15 @@ class Report extends Model
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
     public function preview(?array $sort): array
     {
+        logger('-------');
+
         /** @var Builder $query */
         [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
         [$pagination, $paginationDuration] = Benchmark::value(fn () => $query->paginate(40));
 
-        logger('-------');
-        logger('preview_data', [
-            'query_build' => $queryDuration,
-            'query_pagination_exec' => $paginationDuration,
+        logger('Report::preview', [
+            'query' => $queryDuration,
+            'fetch' => $paginationDuration,
             'total' => $queryDuration + $paginationDuration,
         ]);
 
@@ -115,10 +126,9 @@ class Report extends Model
         [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
         [$data, $dataDuration] = Benchmark::value(fn () => $query->get());
 
-        logger('-------');
-        logger('spreadsheet_data', [
-            'query_build' => $queryDuration,
-            'query_exec' => $dataDuration,
+        logger('Report::spreadsheet', [
+            'query' => $queryDuration,
+            'fetch' => $dataDuration,
             'total' => $queryDuration + $dataDuration,
         ]);
 

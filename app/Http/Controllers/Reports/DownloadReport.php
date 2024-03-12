@@ -16,6 +16,8 @@ class DownloadReport extends Controller
 {
     public function __invoke(PreviewReportRequest $request): StreamedResponse
     {
+        logger('-------');
+
         ini_set('max_execution_time', 600);
         $report = $request->report();
 
@@ -29,8 +31,8 @@ class DownloadReport extends Controller
 
         //        [$contents, $contentsDuration] = Benchmark::value(fn () => $writer->writeToString());
 
-        logger('spreadsheet_build', [
-            'write' => $writeDuration,
+        logger('DownloadReport', [
+            'write_to_xlsx' => $writeDuration,
             //            'read' => $contentsDuration,
             //            'total' => $writeDuration + $contentsDuration,
         ]);

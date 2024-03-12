@@ -55,7 +55,7 @@ class ReportSeeder extends Seeder
 
         $biggieColumns = [];
 
-        for ($i = 0; $i < 8; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $biggieColumns = array_merge($biggieColumns, $redFlagColumns);
         }
 

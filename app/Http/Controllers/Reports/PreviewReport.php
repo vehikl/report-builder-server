@@ -15,7 +15,7 @@ class PreviewReport extends Controller
         [$report, $reportDuration] = Benchmark::value(fn () => $request->report());
         [$preview, $previewDuration] = Benchmark::value(fn () => $report->preview($request->input('sort')));
 
-        logger('preview', [
+        logger('PreviewReport', [
             'report' => $reportDuration,
             'preview' => $previewDuration,
             'total' => $reportDuration + $previewDuration,
