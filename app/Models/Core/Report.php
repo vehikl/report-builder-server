@@ -124,7 +124,7 @@ class Report extends Model
 
         return [
             'headers' => $this->columns->mapWithKeys(fn (Column $column) => [$column->name => $column->format->toExcel()])->toArray(),
-            'records' => $data->map(fn (object $record) => (array) $record)->toArray()
+            'records' => $data->map(fn (object $record) => (array) $record)->toArray(),
         ];
     }
 }

@@ -22,7 +22,7 @@ class QueryMaker
 
         $attributeSelects = Arr::map($tree->attributes, function (SqlAttribute $attribute, string $attributeName) use ($tree, $resolver) {
             $dependencies = collect($resolver->fields($attribute->getDependencies()))
-                ->map(fn(SqlName $path) => self::resolveAttribute($path, $tree->model, $resolver));
+                ->map(fn (SqlName $path) => self::resolveAttribute($path, $tree->model, $resolver));
 
             return DB::raw("{$attribute->toSql(new SqlContext(), ...$dependencies)} as {$resolver->field($attributeName)}");
         });
@@ -66,5 +66,4 @@ class QueryMaker
     {
         return ! str_contains('__', $path);
     }
-
 }
