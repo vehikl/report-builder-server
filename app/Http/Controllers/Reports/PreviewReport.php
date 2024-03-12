@@ -6,11 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\PreviewReportRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Benchmark;
 
 class PreviewReport extends Controller
 {
     public function __invoke(PreviewReportRequest $request): JsonResponse
     {
-        return JsonResource::make($request->report()->preview($request->input('sort')))->toResponse($request);
+        [$report, $reportDuration] = Benchmark::value(fn () => $request->report());
+        [$preview, $previewDuration] = Benchmark::value(fn () => $report->preview($request->input('sort')));
+
+        logger('preview', [
+            'report' => $reportDuration,
+            'preview' => $previewDuration,
+            'total' => $reportDuration + $previewDuration,
+        ]);
+
+        return JsonResource::make($preview)->toResponse($request);
     }
 }

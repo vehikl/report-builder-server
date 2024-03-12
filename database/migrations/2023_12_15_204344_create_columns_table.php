@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('report_id')->constrained();
             $table->integer('position');
+            $table->enum('format', ['General', 'YesNo', 'NumberZeroDecimal', 'NumberTwoDecimals'])->default('General');
             $table->json('expression');
             $table->timestamps();
         });

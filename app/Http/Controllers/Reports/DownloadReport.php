@@ -71,7 +71,11 @@ class DownloadReport extends Controller
     {
         $writer = new XLSXWriter();
 
-        $writer->writeSheet($data, $name);
+        $writer->writeSheetHeader($name, $data['headers']);
+
+        foreach ($data['records'] as $record) {
+            $writer->writeSheetRow($name, $record);
+        }
 
         return $writer;
     }

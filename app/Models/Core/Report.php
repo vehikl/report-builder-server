@@ -84,6 +84,7 @@ class Report extends Model
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
     public function preview(?array $sort): array
     {
+        /** @var Builder $query */
         [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
         [$pagination, $paginationDuration] = Benchmark::value(fn () => $query->paginate(40));
 
@@ -101,6 +102,7 @@ class Report extends Model
                 'name' => $column->name,
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
+                'format' => $column->format->value,
             ]),
             'records' => $pagination,
             'sort' => $sort,
@@ -121,8 +123,8 @@ class Report extends Model
         ]);
 
         return [
-            $this->columns->map(fn (Column $column) => $column->name)->toArray(),
-            ...$data->map(fn (object $record) => (array) $record),
+            'headers' => $this->columns->mapWithKeys(fn (Column $column) => [$column->name => $column->format->toExcel()])->toArray(),
+            'records' => $data->map(fn (object $record) => (array) $record)->toArray()
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models\Core;
 use App\Utils\Expressions\Expression;
 use App\Utils\Expressions\ExpressionContext;
 use App\Utils\FieldPath;
+use App\Utils\Format\Format;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-/** @property Expression $expression */
+/**
+ * @property Expression $expression
+ * @property Format $format
+ */
 class Column extends Model
 {
     use HasFactory;
@@ -21,6 +25,11 @@ class Column extends Model
         'name',
         'expression',
         'position',
+        'format',
+    ];
+
+    protected $casts = [
+        'format' => Format::class,
     ];
 
     public function report(): BelongsTo
