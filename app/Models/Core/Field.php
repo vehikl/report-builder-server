@@ -2,6 +2,7 @@
 
 namespace App\Models\Core;
 
+use App\Models\Client\User;
 use App\Utils\FieldType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,5 +25,17 @@ class Field extends Model
         return Attribute::make(
             get: fn (string $value) => new FieldType($value)
         );
+    }
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => "$this->entity_id.$this->identifier"
+        );
+    }
+
+    public function canAccess(string $action, User $user): bool
+    {
+        return $user->can("$action entity-field $this->full_name");
     }
 }

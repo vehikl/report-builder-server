@@ -2,6 +2,7 @@
 
 namespace App\Models\Core;
 
+use App\Models\Client\User;
 use App\Utils\Expressions\Expression;
 use App\Utils\Expressions\ExpressionContext;
 use App\Utils\FieldPath;
@@ -97,5 +98,19 @@ class Column extends Model
     public function getSelect(ExpressionContext $ctx): string
     {
         return "{$this->expression->toSql($ctx)} as $this->key";
+    }
+
+    public function canAccess(string $action, User $user, Collection $fields): bool
+    {
+        /** @var Collection<int, FieldPath> $fieldPaths */
+        $fieldPaths = Collection::make($this->expression->getFieldPaths())->map(fn (string $path) => new FieldPath($this->report->entity->id, $path));
+
+        foreach ($fieldPaths as $fieldPath) {
+            if (! $fieldPath->canAccess($action, $user, $fields)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

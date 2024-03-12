@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('entity_id')->constrained();
+            $table->string('entity_id')->references('id')->on('entities');
             $table->string('identifier');
             $table->string('path')->nullable();
             $table->string('name');

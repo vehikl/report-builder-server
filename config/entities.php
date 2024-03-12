@@ -2,6 +2,7 @@
 
 return [
     1 => [
+        'id' => 'job',
         'table' => 'jobs',
         'name' => 'Job',
         'fields' => [
@@ -10,10 +11,11 @@ return [
             /*  3 */ ['identifier' => 'ladder', 'path' => 'ladder', 'name' => 'Ladder', 'type' => 'string'],
             /*  4 */ ['identifier' => 'family', 'path' => 'family', 'name' => 'Family', 'type' => 'string'],
             /*  5 */ ['identifier' => 'family_group', 'path' => 'family_group', 'name' => 'Family Group', 'type' => 'string'],
-            /*  6 */ ['identifier' => 'employees', 'path' => 'employees', 'name' => 'Employees', 'type' => 'collection:2'],
+            /*  6 */ ['identifier' => 'employees', 'path' => 'employees', 'name' => 'Employees', 'type' => 'collection:employee'],
         ],
     ],
     2 => [
+        'id' => 'employee',
         'table' => 'employees',
         'name' => 'Employee',
         'fields' => [
@@ -36,15 +38,16 @@ return [
             /* 22 */ ['identifier' => 'salary_increase_amount_usd', 'path' => 'salary_increase_amount_usd', 'name' => 'Salary Increase Amount Usd', 'type' => 'number'],
             /* 23 */ ['identifier' => 'salary_increase_percent', 'path' => 'salary_increase_percent', 'name' => 'Salary Increase Percent', 'type' => 'number'],
 
-            /* 24 */ ['identifier' => 'location', 'path' => null, 'name' => 'Location', 'type' => 'entity:4'],
-            /* 25 */ ['identifier' => 'job', 'path' => 'job', 'name' => 'Job', 'type' => 'entity:1'],
-            /* 26 */ ['identifier' => 'new_job', 'path' => 'newJob', 'name' => 'New Job', 'type' => 'entity:1'],
-            /* 27 */ ['identifier' => 'manager', 'path' => 'manager', 'name' => 'Manager', 'type' => 'entity:2'],
-            /* 28 */ ['identifier' => 'subordinates', 'path' => 'subordinates', 'name' => 'Subordinates', 'type' => 'collection:2'],
-            /* 29 */ ['identifier' => 'equity', 'path' => null, 'name' => 'Equity', 'type' => 'entity:3'],
+            /* 24 */ ['identifier' => 'location', 'path' => null, 'name' => 'Location', 'type' => 'entity:location'],
+            /* 25 */ ['identifier' => 'job', 'path' => 'job', 'name' => 'Job', 'type' => 'entity:job'],
+            /* 26 */ ['identifier' => 'new_job', 'path' => 'newJob', 'name' => 'New Job', 'type' => 'entity:job'],
+            /* 27 */ ['identifier' => 'manager', 'path' => 'manager', 'name' => 'Manager', 'type' => 'entity:employee'],
+            /* 28 */ ['identifier' => 'subordinates', 'path' => 'subordinates', 'name' => 'Subordinates', 'type' => 'collection:employee'],
+            /* 29 */ ['identifier' => 'equity', 'path' => null, 'name' => 'Equity', 'type' => 'entity:equity'],
         ],
     ],
     3 => [
+        'id' => 'equity',
         'table' => 'employees',
         'name' => 'Equity',
         'fields' => [
@@ -53,6 +56,7 @@ return [
         ],
     ],
     4 => [
+        'id' => 'location',
         'table' => 'employees',
         'name' => 'Location',
         'fields' => [

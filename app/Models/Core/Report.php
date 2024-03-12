@@ -2,6 +2,7 @@
 
 namespace App\Models\Core;
 
+use App\Models\Client\User;
 use App\Utils\Dependency\DependencyTree;
 use App\Utils\Expressions\ExpressionContext;
 use App\Utils\PathResolver;
@@ -33,6 +34,14 @@ class Report extends Model
     public function columns(): HasMany
     {
         return $this->hasMany(Column::class)->orderBy('position');
+    }
+
+    /** @return Collection<int, Column> */
+    public function getColumnsFor(User $user): Collection
+    {
+        $fields = Field::query()->get();
+
+        return $this->columns->filter(fn (Column $column) => $column->canAccess('view', $user, $fields));
     }
 
     /** @return array<string, string> */
@@ -69,7 +78,7 @@ class Report extends Model
         [$context, $contextDuration] = Benchmark::value(fn () => ExpressionContext::make($this->getSqlNames()));
 
         [$selects, $selectsDuration] = Benchmark::value(
-            fn () => $this->columns
+            fn () => $this->getColumnsFor(User::first())
                 ->map(fn (Column $column) => DB::raw($column->getSelect($context)))
                 ->toArray()
         );
@@ -109,12 +118,12 @@ class Report extends Model
         return [
             'name' => $this->name,
             'entity_id' => $this->entity_id,
-            'columns' => $this->columns->map(fn (Column $column) => [
+            'columns' => $this->getColumnsFor(User::first())->map(fn (Column $column) => [
                 'name' => $column->name,
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
                 'format' => $column->format->value,
-            ]),
+            ])->toArray(),
             'records' => $pagination,
             'sort' => $sort,
         ];
@@ -133,7 +142,7 @@ class Report extends Model
         ]);
 
         return [
-            'headers' => $this->columns->mapWithKeys(fn (Column $column) => [$column->name => $column->format->toExcel()])->toArray(),
+            'headers' => $this->getColumnsFor(User::first())->mapWithKeys(fn (Column $column) => [$column->name => $column->format->toExcel()])->toArray(),
             'records' => $data->map(fn (object $record) => (array) $record)->toArray(),
         ];
     }

@@ -64,7 +64,7 @@ class ReportSeeder extends Seeder
         $reports = [
             [
                 'name' => 'Employees',
-                'entity_id' => 2,
+                'entity_id' => 'employee',
                 'columns' => [
                     ['name' => 'Name', 'position' => 0, 'expression' => new FieldExpression('display_name')],
                     ['name' => 'Salary', 'position' => 1, 'expression' => new FieldExpression('salary')],
@@ -76,7 +76,7 @@ class ReportSeeder extends Seeder
             ],
             [
                 'name' => 'Employee Managers',
-                'entity_id' => 2,
+                'entity_id' => 'employee',
                 'columns' => [
                     ['name' => 'Name', 'position' => 0, 'expression' => new FieldExpression('display_name')],
                     ['name' => 'Manager', 'position' => 1, 'expression' => new FieldExpression('manager.display_name')],
@@ -84,12 +84,12 @@ class ReportSeeder extends Seeder
             ],
             [
                 'name' => 'Red Flag',
-                'entity_id' => 2,
+                'entity_id' => 'employee',
                 'columns' => $redFlagColumns,
             ],
             [
                 'name' => 'Biggie',
-                'entity_id' => 2,
+                'entity_id' => 'employee',
                 'columns' => $biggieColumns,
             ],
         ];

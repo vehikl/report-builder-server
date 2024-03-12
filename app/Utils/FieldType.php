@@ -8,7 +8,7 @@ class FieldType
 {
     public readonly string $name;
 
-    public readonly ?int $entityId;
+    public readonly ?string $entityId;
 
     /**
      * @throws Exception
@@ -22,7 +22,7 @@ class FieldType
         }
 
         $matches = [];
-        $doesMatch = preg_match('/^entity:(\d+)$/', $value, $matches);
+        $doesMatch = preg_match('/^entity:(\w+)$/', $value, $matches);
         if ($doesMatch) {
             $this->name = 'entity';
             $this->entityId = $matches[1];
@@ -31,7 +31,7 @@ class FieldType
         }
 
         $matches = [];
-        $doesMatch = preg_match('/^collection:(\d+)$/', $value, $matches);
+        $doesMatch = preg_match('/^collection:(\w+)$/', $value, $matches);
         if ($doesMatch) {
             $this->name = 'collection';
             $this->entityId = $matches[1];

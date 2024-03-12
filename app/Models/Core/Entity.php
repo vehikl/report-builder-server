@@ -10,6 +10,8 @@ class Entity extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
     protected $fillable = ['table', 'name'];
 
     public function fields(): HasMany

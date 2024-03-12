@@ -18,6 +18,7 @@ class EntitySeeder extends Seeder
                     ->count(count($fields))
                     ->sequence(...$fields))
                 ->create([
+                    'id' => $entity['id'],
                     'table' => $entity['table'],
                     'name' => $entity['name'],
                 ]);
