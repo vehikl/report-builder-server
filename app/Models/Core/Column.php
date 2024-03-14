@@ -55,7 +55,7 @@ class Column extends Model
         return Collection::make($this->expression->getFieldPaths())
             ->unique()
             ->mapWithKeys(function (string $fieldPath) use ($fields) {
-                $dataPath = (new FieldPath($this->report->entity->id, $fieldPath))->toDataPath($fields);
+                $dataPath = (new FieldPath($this->report->entity_id, $fieldPath))->toDataPath($fields);
 
                 return [$fieldPath => $dataPath];
             })
@@ -103,7 +103,7 @@ class Column extends Model
     public function canAccess(string $action, User $user, Collection $fields): bool
     {
         /** @var Collection<int, FieldPath> $fieldPaths */
-        $fieldPaths = Collection::make($this->expression->getFieldPaths())->map(fn (string $path) => new FieldPath($this->report->entity->id, $path));
+        $fieldPaths = Collection::make($this->expression->getFieldPaths())->map(fn (string $path) => new FieldPath($this->report->entity_id, $path));
 
         foreach ($fieldPaths as $fieldPath) {
             if (! $fieldPath->canAccess($action, $user, $fields)) {

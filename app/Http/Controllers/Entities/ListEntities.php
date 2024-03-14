@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Entities;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Core\EntityCollection;
+use App\Models\Client\User;
 use App\Models\Core\Entity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class ListEntities extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
+        $user = User::query()->with(['permissions', 'roles.permissions'])->first();
+
         $entities = Entity::query()->with('fields')->get();
 
-        return JsonResource::collection($entities)->toResponse($request);
+        return (new EntityCollection($entities))->for($user)->toResponse($request);
     }
 }

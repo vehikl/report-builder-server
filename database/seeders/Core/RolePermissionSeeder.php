@@ -23,7 +23,7 @@ class RolePermissionSeeder extends Seeder
             $superAdmin->givePermissionTo("view entity-field $fullName");
             $superAdmin->givePermissionTo("edit entity-field $fullName");
 
-            if ($field->entity_id !== 'equity' && $fullName !== 'employee.manager') {
+            if ($field->entity_id !== 'equity' && $fullName !== 'employee.manager' && $fullName !== 'employee.equity') {
                 $manager->givePermissionTo("view entity-field $fullName");
                 $manager->givePermissionTo("edit entity-field $fullName");
             }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\PreviewReportRequest;
+use App\Models\Client\User;
 use App\Models\Core\Column;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Benchmark;
@@ -17,24 +18,23 @@ class DownloadReport extends Controller
     public function __invoke(PreviewReportRequest $request): StreamedResponse
     {
         logger('-------');
-
         ini_set('max_execution_time', 600);
+
+        /** @var User $user */
+        $user = User::query()->with(['permissions', 'roles.permissions'])->first();
+
         $report = $request->report();
 
         /** @var XLSXWriter $writer */
         $writer = null;
 
-        $writeDuration = Benchmark::measure(function () use ($request, $report, &$writer) {
+        $writeDuration = Benchmark::measure(function () use ($user, $request, $report, &$writer) {
             //            $writer = $this->generateFromQuery($report->getQuery($request->input('sort')), $report->name, $report->columns);
-            $writer = $this->generateFromData($report->spreadsheet($request->input('sort')), $report->name);
+            $writer = $this->generateFromData($report->spreadsheet($request->input('sort'), $user), $report->name);
         });
-
-        //        [$contents, $contentsDuration] = Benchmark::value(fn () => $writer->writeToString());
 
         logger('DownloadReport', [
             'write_to_xlsx' => $writeDuration,
-            //            'read' => $contentsDuration,
-            //            'total' => $writeDuration + $contentsDuration,
         ]);
 
         $fileName = $report->name.' '.Carbon::now()->format('Y-m-d H:i:s').'.xlsx';

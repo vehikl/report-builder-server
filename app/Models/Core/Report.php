@@ -67,7 +67,7 @@ class Report extends Model
     }
 
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
-    public function getQuery(?array $sort): Builder
+    public function getQuery(?array $sort, User $user): Builder
     {
         $model = new ($this->entity->getModelClass());
 
@@ -78,7 +78,7 @@ class Report extends Model
         [$context, $contextDuration] = Benchmark::value(fn () => ExpressionContext::make($this->getSqlNames()));
 
         [$selects, $selectsDuration] = Benchmark::value(
-            fn () => $this->getColumnsFor(User::first())
+            fn () => $this->getColumnsFor($user)
                 ->map(fn (Column $column) => DB::raw($column->getSelect($context)))
                 ->toArray()
         );
@@ -101,12 +101,12 @@ class Report extends Model
     }
 
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
-    public function preview(?array $sort): array
+    public function preview(?array $sort, User $user): array
     {
         logger('-------');
 
         /** @var Builder $query */
-        [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
+        [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort, $user));
         [$pagination, $paginationDuration] = Benchmark::value(fn () => $query->paginate(40));
 
         logger('Report::preview', [
@@ -118,7 +118,7 @@ class Report extends Model
         return [
             'name' => $this->name,
             'entity_id' => $this->entity_id,
-            'columns' => $this->getColumnsFor(User::first())->map(fn (Column $column) => [
+            'columns' => $this->getColumnsFor($user)->map(fn (Column $column) => [
                 'name' => $column->name,
                 'key' => $column->key,
                 'expression' => $column->expression->toArray(),
@@ -130,9 +130,9 @@ class Report extends Model
     }
 
     /** @param  array{key: string, direction: 'asc'|'dsc'}|null  $sort */
-    public function spreadsheet(?array $sort): array
+    public function spreadsheet(?array $sort, User $user): array
     {
-        [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort));
+        [$query, $queryDuration] = Benchmark::value(fn () => $this->getQuery($sort, $user));
         [$data, $dataDuration] = Benchmark::value(fn () => $query->get());
 
         logger('Report::spreadsheet', [
@@ -142,7 +142,7 @@ class Report extends Model
         ]);
 
         return [
-            'headers' => $this->getColumnsFor(User::first())->mapWithKeys(fn (Column $column) => [$column->name => $column->format->toExcel()])->toArray(),
+            'headers' => $this->getColumnsFor($user)->mapWithKeys(fn (Column $column) => [$column->name => $column->format->toExcel()])->toArray(),
             'records' => $data->map(fn (object $record) => (array) $record)->toArray(),
         ];
     }
